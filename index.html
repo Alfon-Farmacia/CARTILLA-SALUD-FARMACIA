@@ -2,9 +2,16 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <!-- PWA iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Cartilla">
+  <!-- PWA Android -->
   <meta name="theme-color" content="#1a4731">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <!-- Icono generado por JS más abajo -->
   <title>Cartilla de Salud</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,12 +31,12 @@
       --orange:   #c2410c;
       --blue:     #1a4731;
       --green:    #1a4731;
-      --badge-ok: #dcfce7;
+      --badge-ok: #bbf7d0;
       --badge-ok-t: #15803d;
-      --badge-w:  #ffedd5;
-      --badge-w-t:#c2410c;
-      --badge-h:  #fee2e2;
-      --badge-h-t:#b91c1c;
+      --badge-w:  #fde68a;
+      --badge-w-t: #92400e;
+      --badge-h:  #fecaca;
+      --badge-h-t: #dc2626;
     }
 
     html, body {
@@ -44,86 +51,137 @@
     /* ── BOOK WRAPPER ── */
     #book {
       display: flex;
+      flex-direction: column;
       height: 100vh;
       max-width: 520px;
       margin: 0 auto;
       box-shadow: 4px 0 30px var(--shadow), -2px 0 10px rgba(0,0,0,.1);
       position: relative;
+      background: #fff;
     }
 
-    /* ── SPINE ── */
-    #spine {
-      width: var(--tab-w);
-      background: linear-gradient(to right, #1a4731 0%, #2d6a4f 55%, #52b788 100%);
-      flex-shrink: 0;
+    /* ── SPINE oculto ── */
+    #spine { display: none; }
+
+    /* ── CABECERA CON USUARIO ── */
+    #app-header {
+      background: #1a4731;
       display: flex;
-      flex-direction: column;
       align-items: center;
-      padding: 0;
-      position: relative;
-      z-index: 2;
-      box-shadow: 2px 0 8px rgba(0,0,0,.3);
+      justify-content: space-between;
+      padding: 8px 14px 0;
+      flex-shrink: 0;
     }
-
-    /* vertical title on spine */
-    #spine-title {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
+    #app-header .app-title {
       color: #f5deb3;
-      font-size: .75rem;
+      font-size: .78rem;
       font-weight: bold;
-      letter-spacing: .12em;
+      letter-spacing: .08em;
       text-transform: uppercase;
-      padding: 16px 0;
       opacity: .8;
-      white-space: nowrap;
-      flex: 1;
-      text-align: center;
     }
-
-    /* ── TAB BUTTONS ── */
-    .tab-btn {
-      width: 100%;
-      padding: 14px 0;
+    #btn-cambiar-usuario {
+      background: rgba(255,255,255,.15);
       border: none;
-      background: transparent;
+      border-radius: 20px;
+      padding: 10px 16px;
+      color: #f5deb3;
+      font-size: .9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'Georgia', serif;
+      min-height: 44px;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #btn-cambiar-usuario svg { width: 18px; height: 18px; stroke: #f5deb3; }
+
+    /* ── PESTAÑAS SUPERIORES ── */
+    #top-tabs {
+      display: flex;
+      flex-shrink: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #top-tabs::-webkit-scrollbar { display: none; }
+    .tab-btn {
+      flex: 1;
+      min-width: 56px;
+      padding: 14px 4px 10px;
+      border: none;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 5px;
-      transition: background .15s;
+      transition: filter .15s;
       position: relative;
-      border-radius: 12px;
+      -webkit-tap-highlight-color: transparent;
     }
-    .tab-btn svg { width: 20px; height: 20px; }
+    .tab-btn svg { width: 26px; height: 26px; }
     .tab-btn .tab-label {
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      font-size: .58rem;
+      font-size: .60rem;
       font-weight: bold;
-      letter-spacing: .08em;
+      letter-spacing: .04em;
       text-transform: uppercase;
-      white-space: nowrap;
-      color: #f5deb3;
-      opacity: .75;
+      color: rgba(255,255,255,.85);
     }
-    .tab-btn.active {
-      background: rgba(255,255,255,.18);
-      border-radius: 12px;
-    }
+    .tab-btn.active .tab-label { color: #fff; }
     .tab-btn.active::after {
       content: '';
       position: absolute;
-      right: 0; top: 50%;
-      transform: translateY(-50%);
-      width: 4px; height: 60%;
-      background: #f5deb3;
-      border-radius: 2px 0 0 2px;
+      bottom: 0; left: 10%; right: 10%;
+      height: 4px;
+      background: rgba(255,255,255,.95);
+      border-radius: 4px 4px 0 0;
     }
-    .tab-btn svg { color: #f5deb3; stroke: #f5deb3; }
+    /* Verdes oscuros diferentes por sección */
+    .tab-btn[data-page="tension"]      { background: #0d2b1e; }
+    .tab-btn[data-page="peso"]         { background: #14382a; }
+    .tab-btn[data-page="azucar"]       { background: #1a4531; }
+    .tab-btn[data-page="colesterol"]   { background: #1e5038; }
+    .tab-btn[data-page="observaciones"]{ background: #245c42; }
+    .tab-btn[data-page="medicacion"]   { background: #113325; }
+    .tab-btn[data-page="valores"]      { background: #0a2218; }
+    .tab-btn svg { stroke: rgba(255,255,255,.85); color: rgba(255,255,255,.85); }
+
+    /* ── TABLA DE VALORES ── */
+    .ref-section {
+      background: #f4faf7;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+    .ref-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: var(--spine);
+      margin-bottom: 12px;
+    }
+    .ref-title svg { stroke: var(--spine); flex-shrink: 0; }
+    .val-ok   { color: #16a34a; font-weight: bold; font-size: 1rem; }
+    .val-warn { color: #d97706; font-weight: bold; font-size: 1rem; }
+    .val-high { color: #dc2626; font-weight: bold; font-size: 1rem; }
+    .ref-note {
+      font-size: .85rem;
+      color: var(--ink-soft);
+      margin-top: 8px;
+      font-style: italic;
+    }
+    .ref-footer {
+      text-align: center;
+      font-size: .82rem;
+      color: #888;
+      font-family: sans-serif;
+      margin-top: 10px;
+      padding: 0 10px;
+    }
 
     /* ── PAGES AREA ── */
     #pages {
@@ -142,15 +200,15 @@
       inset: 0;
       height: 100%;
       overflow-y: auto;
-      padding: 20px 18px 90px;
+      padding: 22px 18px 90px;
       -webkit-overflow-scrolling: touch;
       opacity: 0;
       pointer-events: none;
       background: #ffffff;
       background-image: none;
-      /* Hide the back face so the page disappears cleanly at 90° */
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
+      font-size: 1.05rem;
     }
 
     .page.active {
@@ -234,15 +292,11 @@
       border-bottom: 2px solid var(--ink-soft);
     }
     .page-header h2 {
-      font-size: 1.3rem;
+      font-size: 1.6rem;
       color: var(--spine);
-      letter-spacing: .05em;
+      letter-spacing: .04em;
     }
-    .page-header .page-num {
-      font-size: .7rem;
-      color: var(--ink-soft);
-      margin-top: 2px;
-    }
+    .page-header .page-num { display: none; }
 
     /* ── COVER ── */
     #page-portada {
@@ -327,107 +381,125 @@
 
     /* ── TABLES ── */
     .section-label {
-      font-size: .7rem;
+      font-size: .85rem;
       text-transform: uppercase;
-      letter-spacing: .1em;
+      letter-spacing: .08em;
       color: var(--ink-soft);
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       margin-top: 14px;
     }
 
     /* Add-row form */
     .add-form {
-      background: rgba(255,255,255,.55);
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      margin-bottom: 14px;
+      background: #f4faf7;
+      border: 2px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 18px;
     }
-    .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .form-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+    .form-row  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .form-row4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
-    .fg { display: flex; flex-direction: column; gap: 3px; }
-    .fg label { font-size: .68rem; font-weight: bold; text-transform: uppercase; letter-spacing: .06em; color: var(--ink-soft); font-family: sans-serif; }
+    .fg { display: flex; flex-direction: column; gap: 5px; }
+    .fg label {
+      font-size: .8rem; font-weight: bold; text-transform: uppercase;
+      letter-spacing: .05em; color: var(--ink-soft); font-family: sans-serif;
+    }
     .fg input, .fg select, .fg textarea {
       font-family: 'Georgia', serif;
-      font-size: .9rem;
+      font-size: 1.1rem;
       color: var(--ink);
       background: #ffffff;
-      border: 1px solid var(--line);
-      border-radius: 5px;
-      padding: 7px 8px;
+      border: 2px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 10px;
       outline: none;
       width: 100%;
       -webkit-appearance: none;
+      min-height: 50px;
     }
     .fg input:focus, .fg select:focus, .fg textarea:focus { border-color: var(--spine2); }
-    .fg textarea { min-height: 52px; resize: vertical; }
+    .fg textarea { min-height: 80px; resize: vertical; }
 
+    .btn-add-wrap {
+      display: flex;
+      justify-content: center;
+      margin-top: 16px;
+    }
     .btn-add {
-      margin-top: 10px;
-      width: 100%;
-      padding: 10px;
-      background: var(--spine);
-      color: #fdf6e3;
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 38% 35%, #4caf50 0%, #2d8a40 45%, #1a5c28 100%);
+      color: #fff;
       border: none;
-      border-radius: 6px;
       font-family: 'Georgia', serif;
-      font-size: .9rem;
+      font-size: 1.5rem;
       font-weight: bold;
       cursor: pointer;
+      box-shadow: 0 4px 14px rgba(26,87,49,.45), inset 0 1px 2px rgba(255,255,255,.25);
+      -webkit-tap-highlight-color: transparent;
+      transition: transform .12s, box-shadow .12s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       letter-spacing: .04em;
-      transition: background .15s;
     }
-    .btn-add:active { background: var(--spine2); }
+    .btn-add:active {
+      transform: scale(.92);
+      box-shadow: 0 2px 6px rgba(26,87,49,.4);
+    }
 
     /* Data table */
     .data-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: .78rem;
-      min-width: 340px;
+      font-size: .95rem;
+      min-width: 300px;
     }
-    thead tr { background: #f3f4f6; }
+    thead tr { background: #e8f5ee; }
     th {
-      padding: 7px 8px;
+      padding: 12px 10px;
       text-align: left;
       font-family: sans-serif;
-      font-size: .65rem;
+      font-size: .75rem;
       text-transform: uppercase;
-      letter-spacing: .07em;
+      letter-spacing: .06em;
       color: var(--spine);
       border-bottom: 2px solid var(--spine2);
       white-space: nowrap;
     }
     td {
-      padding: 7px 8px;
+      padding: 14px 10px;
       border-bottom: 1px solid var(--line);
-      vertical-align: top;
+      vertical-align: middle;
       color: var(--ink);
+      font-size: 1rem;
     }
     tr:last-child td { border-bottom: none; }
-    tr:nth-child(even) td { background: rgba(255,255,255,.35); }
+    tr:nth-child(even) td { background: #f9fdfb; }
 
-    .btn-del-row {
-      background: none;
+    .del-btn {
+      background: #fee2e2;
       border: none;
-      color: #ccc;
+      color: #b91c1c;
       cursor: pointer;
-      font-size: .85rem;
-      padding: 2px 4px;
-      border-radius: 4px;
-      transition: color .15s;
-      font-family: sans-serif;
+      font-size: 1rem;
+      font-weight: bold;
+      padding: 10px 14px;
+      border-radius: 8px;
+      -webkit-tap-highlight-color: transparent;
+      min-width: 44px; min-height: 44px;
     }
-    .btn-del-row:active { color: var(--red); }
+    .del-btn:active { background: #fca5a5; }
 
     /* badges */
     .badge {
       display: inline-block;
-      padding: 1px 6px;
-      border-radius: 8px;
-      font-size: .62rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: .82rem;
       font-weight: bold;
       font-family: sans-serif;
       white-space: nowrap;
@@ -496,136 +568,54 @@
     }
     .btn-export:active { background: #f3f4f6; }
 
-    /* ── LOGIN OVERLAY ── */
-    #login-overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(160deg, #1a4731 0%, #2d6a4f 60%, #52b788 100%);
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      z-index: 9999;
-      font-family: 'Georgia', serif;
-      overflow-y: auto;
-      padding: 24px 0 32px;
-      -webkit-overflow-scrolling: touch;
+    /* ── PANTALLA DE INICIO (login) ── */
+    #user-overlay {
+      position: fixed; inset: 0;
+      background: linear-gradient(170deg, #1a4731 0%, #2d6a4f 55%, #52b788 100%);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 9999; font-family: 'Georgia', serif;
+      padding: 20px;
     }
-    #login-overlay.hidden { display: none; }
+    #user-overlay.hidden { display: none; }
+    .user-box {
+      background: #fff; border-radius: 24px;
+      padding: 36px 28px 32px; width: 100%; max-width: 360px;
+      box-shadow: 0 12px 50px rgba(0,0,0,.35); text-align: center;
+    }
+    /* Cruz SVG */
+    .login-cross { width: 110px; height: 110px; margin: 0 auto 20px; display: block; }
+    .user-title {
+      font-size: 1.6rem; font-weight: bold; color: #1a4731;
+      letter-spacing: .03em; margin-bottom: 6px;
+    }
+    .user-question {
+      font-size: 1.3rem; color: #2d6a4f;
+      margin-bottom: 24px; font-style: italic;
+    }
+    .user-input {
+      width: 100%; padding: 18px 16px;
+      border: 2px solid #b7deca; border-radius: 12px;
+      font-size: 1.2rem; font-family: 'Georgia', serif;
+      color: #1a3325; outline: none; background: #fff;
+      -webkit-appearance: none; transition: border-color .2s;
+      margin-bottom: 14px; text-align: center;
+    }
+    .user-input:focus { border-color: #2d6a4f; }
+    .user-btn {
+      width: 100%; padding: 18px;
+      background: linear-gradient(to right, #1a4731, #2d6a4f);
+      color: #fff; border: none; border-radius: 12px;
+      font-family: 'Georgia', serif; font-size: 1.2rem;
+      font-weight: bold; cursor: pointer;
+      transition: opacity .15s; margin-top: 4px;
+    }
+    .user-btn:active { opacity: .85; }
+    .user-error {
+      color: #c0392b; font-size: .95rem; margin-top: 12px;
+      min-height: 20px; font-family: sans-serif; font-weight: bold;
+    }
+    #paso-pwd { display: none; }
 
-    .login-box {
-      background: #fff;
-      border-radius: 16px;
-      padding: 36px 28px 28px;
-      width: 88%;
-      max-width: 340px;
-      box-shadow: 0 8px 40px rgba(0,0,0,.3);
-      text-align: center;
-    }
-    .login-ornament { font-size: 2.4rem; margin-bottom: 6px; }
-    .login-title {
-      font-size: 1.3rem;
-      font-weight: bold;
-      color: var(--spine);
-      letter-spacing: .04em;
-      margin-bottom: 4px;
-    }
-    .login-subtitle {
-      font-size: .78rem;
-      color: var(--ink-soft);
-      margin-bottom: 22px;
-      font-style: italic;
-    }
-    .login-divider {
-      height: 2px;
-      background: linear-gradient(to right, transparent, var(--spine2), transparent);
-      margin-bottom: 22px;
-    }
-    .login-fg {
-      text-align: left;
-      margin-bottom: 14px;
-    }
-    .login-fg label {
-      display: block;
-      font-size: .7rem;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      color: var(--ink-soft);
-      margin-bottom: 5px;
-      font-family: sans-serif;
-    }
-    .login-fg input {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      font-size: 1rem;
-      font-family: 'Georgia', serif;
-      color: var(--ink);
-      outline: none;
-      background: #fff;
-      -webkit-appearance: none;
-      transition: border-color .15s;
-    }
-    .login-fg input:focus { border-color: var(--spine2); }
-    .btn-login {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(to right, var(--spine), var(--spine2));
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-family: 'Georgia', serif;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 6px;
-      letter-spacing: .04em;
-      transition: opacity .15s;
-    }
-    .btn-login:active { opacity: .85; }
-    .login-error {
-      color: var(--red);
-      font-size: .78rem;
-      margin-top: 10px;
-      min-height: 18px;
-      font-family: sans-serif;
-    }
-    .login-mode-link {
-      display: block;
-      margin-top: 14px;
-      font-size: .75rem;
-      color: var(--ink-soft);
-      cursor: pointer;
-      font-family: sans-serif;
-      text-decoration: underline;
-    }
-
-    /* Change-password modal */
-    #pwd-modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,.5);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      z-index: 9998;
-    }
-    #pwd-modal.open { display: flex; }
-    .pwd-box {
-      background: #fff;
-      border-radius: 14px;
-      padding: 24px 22px;
-      width: 86%;
-      max-width: 320px;
-      box-shadow: 0 6px 30px rgba(0,0,0,.25);
-    }
-    .pwd-box h3 {
-      font-size: 1rem;
-      color: var(--spine);
-      margin-bottom: 16px;
-      text-align: center;
-    }
     .btn-logout-spine {
       width: 100%;
       padding: 12px 0;
@@ -644,50 +634,48 @@
 </head>
 <body>
 
-<!-- ── LOGIN OVERLAY ── -->
-<div id="login-overlay">
-  <div class="login-box">
-    <div class="login-ornament">✚</div>
-    <div class="login-title">Cartilla de Salud</div>
-    <div class="login-subtitle" id="login-subtitle">Introduce tus datos de acceso</div>
-    <div class="login-divider"></div>
-    <div class="login-fg">
-      <label>Usuario</label>
-      <input type="text" id="login-user" placeholder="Tu nombre de usuario" autocomplete="username" autocapitalize="none">
-    </div>
-    <div class="login-fg">
-      <label id="login-pwd-label">Contraseña</label>
-      <input type="password" id="login-pwd" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <div class="login-fg" id="login-pwd2-wrap" style="display:none">
-      <label>Repetir contraseña</label>
-      <input type="password" id="login-pwd2" placeholder="••••••••" autocomplete="new-password">
-    </div>
-    <button class="btn-login" id="btn-login-ok" onclick="doLogin()">Entrar</button>
-    <div class="login-error" id="login-error"></div>
-    <div id="login-note" style="margin-top:12px;font-size:.72rem;color:#6b4f2e;font-family:sans-serif;text-align:center;line-height:1.5"></div>
-  </div>
-</div>
+<!-- ── PANTALLA DE INICIO ── -->
+<div id="user-overlay">
+  <div class="user-box">
+    <!-- Cruz médica con ECG -->
+    <svg class="login-cross" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="cross-clip">
+          <rect x="34" y="8" width="32" height="84" rx="8"/>
+          <rect x="8" y="34" width="84" height="32" rx="8"/>
+        </clipPath>
+      </defs>
+      <rect x="0" y="0" width="100" height="50" fill="#4caf50" clip-path="url(#cross-clip)"/>
+      <rect x="0" y="50" width="100" height="50" fill="#1a7a3c" clip-path="url(#cross-clip)"/>
+      <polyline
+        points="8,50 26,50 30,50 34,40 38,60 42,28 46,72 50,50 54,50 92,50"
+        fill="none" stroke="white" stroke-width="3.5"
+        stroke-linecap="round" stroke-linejoin="round"
+        clip-path="url(#cross-clip)"/>
+    </svg>
 
-<!-- ── CHANGE PASSWORD MODAL ── -->
-<div id="pwd-modal">
-  <div class="pwd-box">
-    <h3>Cambiar contraseña</h3>
-    <div class="login-fg">
-      <label>Contraseña actual</label>
-      <input type="password" id="pwd-actual" placeholder="••••••••">
+    <div class="user-title">Cartilla de Salud</div>
+    <div class="user-question">¿Quién eres?</div>
+
+    <!-- Paso 1: nombre -->
+    <div id="paso-nombre">
+      <input type="text" id="input-usuario" class="user-input"
+        placeholder="Escribe tu nombre" autocomplete="off" autocapitalize="words">
+      <button class="user-btn" onclick="siguientePaso()">Siguiente →</button>
     </div>
-    <div class="login-fg">
-      <label>Nueva contraseña</label>
-      <input type="password" id="pwd-nueva" placeholder="••••••••">
+
+    <!-- Paso 2: contraseña -->
+    <div id="paso-pwd">
+      <p id="saludo-usuario" style="font-size:1.1rem;color:#2d6a4f;margin-bottom:16px;"></p>
+      <input type="password" id="input-pwd" class="user-input"
+        placeholder="Contraseña (mín. 4 dígitos)" autocomplete="current-password"
+        inputmode="numeric" maxlength="8">
+      <button class="user-btn" onclick="entrarUsuario()">Entrar</button>
+      <p style="font-size:.85rem;color:#888;margin-top:12px;cursor:pointer;font-family:sans-serif"
+        onclick="volverNombre()">← Cambiar nombre</p>
     </div>
-    <div class="login-fg" style="margin-bottom:0">
-      <label>Repetir nueva</label>
-      <input type="password" id="pwd-nueva2" placeholder="••••••••">
-    </div>
-    <div class="login-error" id="pwd-modal-error"></div>
-    <button class="btn-login" onclick="doCambiarPwd()" style="margin-top:14px">Guardar</button>
-    <button onclick="closePwdModal()" style="width:100%;padding:10px;border:none;background:none;color:var(--ink-soft);font-size:.85rem;cursor:pointer;margin-top:6px">Cancelar</button>
+
+    <div class="user-error" id="user-error"></div>
   </div>
 </div>
 
@@ -695,67 +683,77 @@
 
 <div id="book">
 
-  <!-- ── SPINE / TABS ── -->
-  <div id="spine">
-    <span id="spine-title">Cartilla de Salud</span>
+  <!-- ── SPINE oculto ── -->
+  <div id="spine" style="display:none"></div>
 
-    <button class="tab-btn active" data-page="portada" onclick="goPage('portada',this)" title="Portada">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      <span class="tab-label">Portada</span>
+  <!-- ── CABECERA ── -->
+  <div id="app-header">
+    <span class="app-title">Cartilla de Salud</span>
+    <button id="btn-cambiar-usuario" onclick="cambiarUsuario()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      <span id="label-usuario">Usuario</span>
     </button>
+  </div>
 
-    <button class="tab-btn" data-page="tension" onclick="goPage('tension',this)" title="Tensión">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+  <!-- ── PESTAÑAS SUPERIORES ── -->
+  <div id="top-tabs">
+    <button class="tab-btn active" data-page="tension" onclick="goPage('tension',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
       <span class="tab-label">Tensión</span>
     </button>
-
-    <button class="tab-btn" data-page="colesterol" onclick="goPage('colesterol',this)" title="Colesterol">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
-      <span class="tab-label">Colest.</span>
+    <button class="tab-btn" data-page="peso" onclick="goPage('peso',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2h12l2 6H4L6 2z"/><rect x="3" y="8" width="18" height="14" rx="2"/><path d="M12 12v4m-2-2h4"/></svg>
+      <span class="tab-label">Peso</span>
     </button>
-
-    <button class="tab-btn" data-page="azucar" onclick="goPage('azucar',this)" title="Azúcar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 6v6l4 2"/></svg>
+    <button class="tab-btn" data-page="azucar" onclick="goPage('azucar',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
       <span class="tab-label">Azúcar</span>
     </button>
-
-    <button class="tab-btn" data-page="observaciones" onclick="goPage('observaciones',this)" title="Observaciones">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-      <span class="tab-label">Observ.</span>
+    <button class="tab-btn" data-page="colesterol" onclick="goPage('colesterol',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8 2 4 6 4 10c0 5 8 12 8 12s8-7 8-12c0-4-4-8-8-8z"/></svg>
+      <span class="tab-label">Colesterol</span>
     </button>
-
-    <button class="tab-btn" data-page="medicacion" onclick="goPage('medicacion',this)" title="Medicación">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+    <button class="tab-btn" data-page="observaciones" onclick="goPage('observaciones',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+      <span class="tab-label">Notas</span>
+    </button>
+    <button class="tab-btn" data-page="medicacion" onclick="goPage('medicacion',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
       <span class="tab-label">Medicac.</span>
     </button>
-
-    <!-- Change password -->
-    <button class="btn-logout-spine" onclick="openPwdModal()" title="Cambiar contraseña" style="margin-top:auto">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-      <span class="tab-label">Clave</span>
-    </button>
-
-    <!-- Logout -->
-    <button class="btn-logout-spine" onclick="doLogout()" title="Cerrar sesión">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      <span class="tab-label">Salir</span>
+    <button class="tab-btn" data-page="valores" onclick="goPage('valores',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      <span class="tab-label">Valores</span>
     </button>
   </div>
 
   <!-- ── PAGES ── -->
   <div id="pages">
 
-    <!-- PORTADA -->
-    <div class="page active" id="page-portada">
-      <div class="cover-ornament">✚</div>
-      <div class="cover-title">Cartilla de Salud</div>
-      <div class="cover-divider"></div>
-
-      <input class="cover-input" id="c-nombre" type="text" placeholder="Escribe tu nombre aquí" autocomplete="off" oninput="savePortada()">
-
-      <input class="cover-input" id="c-fnac" type="date" oninput="savePortada()">
-
-      <div class="cover-footer">Datos almacenados localmente en este dispositivo</div>
+    <!-- PESO -->
+    <div class="page" id="page-peso">
+      <div class="page-header">
+        <h2>Peso</h2>
+      </div>
+      <div class="add-form">
+        <div class="section-label">Añadir medición</div>
+        <div class="form-row" style="margin-bottom:8px">
+          <div class="fg">
+            <label>Fecha</label>
+            <input type="date" id="pe-fecha">
+          </div>
+          <div class="fg">
+            <label>Hora</label>
+            <input type="time" id="pe-hora">
+          </div>
+        </div>
+        <div class="fg" style="margin-bottom:8px">
+          <label>Peso (kg)</label>
+          <input type="number" id="pe-kg" placeholder="75.5" step="0.1" min="20" max="300">
+        </div>
+        <div class="btn-add-wrap"><button class="btn-add" onclick="addPeso()">OK</button></div>
+      </div>
+      <div id="lista-peso"><div class="empty">Aún no hay pesos registrados.</div></div>
     </div>
 
     <!-- MEDICACIÓN -->
@@ -809,7 +807,7 @@
             <input type="text" id="m-ffinal" placeholder="CRÓNICO">
           </div>
         </div>
-        <button class="btn-add" onclick="addMed()">+ Añadir fármaco</button>
+        <div class="btn-add-wrap"><button class="btn-add" onclick="addMed()">OK</button></div>
       </div>
 
       <div class="data-table-wrap">
@@ -832,7 +830,7 @@
     </div>
 
     <!-- TENSIÓN -->
-    <div class="page" id="page-tension">
+    <div class="page active" id="page-tension">
       <div class="page-header">
         <h2>Tensión Arterial</h2>
         <div class="page-num">Hoja 1 de 5</div>
@@ -864,26 +862,7 @@
             <input type="number" id="t-pulso" min="30" max="200" placeholder="70">
           </div>
         </div>
-        <div class="form-row" style="margin-bottom:0">
-          <div class="fg">
-            <label>Brazo</label>
-            <select id="t-brazo">
-              <option value="">—</option>
-              <option>Izquierdo</option>
-              <option>Derecho</option>
-            </select>
-          </div>
-          <div class="fg">
-            <label>Postura</label>
-            <select id="t-postura">
-              <option value="">—</option>
-              <option>Sentado</option>
-              <option>Tumbado</option>
-              <option>De pie</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn-add" onclick="addTension()">+ Añadir medición</button>
+        <div class="btn-add-wrap"><button class="btn-add" onclick="addTension()">OK</button></div>
       </div>
 
       <button class="btn-export" onclick="exportCSV('tension')">
@@ -900,8 +879,6 @@
               <th>Máx.</th>
               <th>Mín.</th>
               <th>Pulso</th>
-              <th>Brazo</th>
-              <th>Postura</th>
               <th>Resultado</th>
               <th></th>
             </tr>
@@ -949,7 +926,7 @@
             <input type="number" id="col-trig" min="30" max="1000" placeholder="150">
           </div>
         </div>
-        <button class="btn-add" onclick="addColesterol()">+ Añadir analítica</button>
+        <div class="btn-add-wrap"><button class="btn-add" onclick="addColesterol()">OK</button></div>
       </div>
 
       <button class="btn-export" onclick="exportCSV('colesterol')">
@@ -1011,7 +988,7 @@
             </select>
           </div>
         </div>
-        <button class="btn-add" onclick="addAzucar()">+ Añadir medición</button>
+        <div class="btn-add-wrap"><button class="btn-add" onclick="addAzucar()">OK</button></div>
       </div>
 
       <button class="btn-export" onclick="exportCSV('azucar')">
@@ -1054,129 +1031,153 @@
           <label>Observación</label>
           <textarea id="ob-texto" placeholder="Escribe aquí cualquier observación, síntoma, visita médica, cambio de medicación..."></textarea>
         </div>
-        <button class="btn-add" onclick="addObs()">+ Añadir observación</button>
+        <div class="btn-add-wrap"><button class="btn-add" onclick="addObs()">OK</button></div>
       </div>
 
       <div id="lista-obs"><div class="empty">Aún no hay observaciones registradas.</div></div>
+    </div>
+
+    <!-- TABLA DE VALORES DE REFERENCIA -->
+    <div class="page" id="page-valores">
+      <div class="page-header">
+        <h2>Tabla de Valores</h2>
+      </div>
+
+      <!-- TENSIÓN -->
+      <div class="ref-section">
+        <div class="ref-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Tensión Arterial
+        </div>
+        <table>
+          <thead><tr><th>Categoría</th><th>Máxima</th><th>Mínima</th></tr></thead>
+          <tbody>
+            <tr><td>Óptima</td><td class="val-ok">&lt; 120</td><td class="val-ok">&lt; 80</td></tr>
+            <tr><td>Normal</td><td class="val-ok">120–129</td><td class="val-ok">80–84</td></tr>
+            <tr><td>Normal-alta</td><td class="val-warn">130–139</td><td class="val-warn">85–89</td></tr>
+            <tr><td>Hipertensión</td><td class="val-high">≥ 140</td><td class="val-high">≥ 90</td></tr>
+          </tbody>
+        </table>
+        <p class="ref-note">Valores en mmHg</p>
+      </div>
+
+      <!-- COLESTEROL -->
+      <div class="ref-section">
+        <div class="ref-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><path d="M12 2C8 2 4 6 4 10c0 5 8 12 8 12s8-7 8-12c0-4-4-8-8-8z"/></svg>
+          Colesterol Total
+        </div>
+        <table>
+          <thead><tr><th>Categoría</th><th>Valor</th></tr></thead>
+          <tbody>
+            <tr><td>Óptimo</td><td class="val-ok">&lt; 200 mg/dL</td></tr>
+            <tr><td>Elevado</td><td class="val-warn">200–239 mg/dL</td></tr>
+            <tr><td>Alto</td><td class="val-high">≥ 240 mg/dL</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- AZÚCAR -->
+      <div class="ref-section">
+        <div class="ref-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="22" height="22"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          Azúcar en Sangre (Glucosa)
+        </div>
+        <table>
+          <thead><tr><th>Categoría</th><th>En ayunas</th><th>2h después</th></tr></thead>
+          <tbody>
+            <tr><td>Normal</td><td class="val-ok">&lt; 100</td><td class="val-ok">&lt; 140</td></tr>
+            <tr><td>Prediabetes</td><td class="val-warn">100–125</td><td class="val-warn">140–199</td></tr>
+            <tr><td>Diabetes</td><td class="val-high">≥ 126</td><td class="val-high">≥ 200</td></tr>
+          </tbody>
+        </table>
+        <p class="ref-note">Valores en mg/dL</p>
+      </div>
+
+      <p class="ref-footer">Fuente: Guías ESC / ADA. Consulte siempre a su médico.</p>
     </div>
 
   </div><!-- /pages -->
 </div><!-- /book -->
 
 <script>
-// ── AUTH ──
-const AUTH_KEY = 'cartilla_auth';
-
 function lsGet(k)    { try { return localStorage.getItem(k); }    catch { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch { return false; } }
 
-function getAuth() {
-  try { return JSON.parse(lsGet(AUTH_KEY)) || null; } catch { return null; }
-}
+// ── USUARIO Y LOGIN ──
+let currentUser = '';
+let currentNombre = '';
 
-function initLogin() {
-  const auth = getAuth();
-  if (!auth) {
-    // First time: setup mode
-    document.getElementById('login-subtitle').textContent  = 'Primera vez en este dispositivo';
-    document.getElementById('btn-login-ok').textContent    = 'Crear acceso';
-    document.getElementById('login-pwd-label').textContent = 'Contraseña';
-    document.getElementById('login-pwd2-wrap').style.display = '';
-    document.getElementById('login-note').textContent = 'Cada dispositivo guarda sus propios datos de acceso. Si ya tienes cuenta en otro dispositivo, crea una nueva aquí.';
-  }
-  // Enter on password field triggers login
-  ['login-user','login-pwd','login-pwd2'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-  });
-}
-
-function doLogin() {
-  const user = document.getElementById('login-user').value.trim();
-  const pwd  = document.getElementById('login-pwd').value;
-  const err  = document.getElementById('login-error');
+function siguientePaso() {
+  const nombre = document.getElementById('input-usuario').value.trim();
+  const err    = document.getElementById('user-error');
   err.textContent = '';
-
-  if (!user || !pwd) { err.textContent = 'Rellena usuario y contraseña.'; return; }
-
-  const auth = getAuth();
-
-  if (!auth) {
-    // First-time setup
-    const pwd2 = document.getElementById('login-pwd2').value;
-    if (pwd !== pwd2) { err.textContent = 'Las contraseñas no coinciden.'; return; }
-    if (pwd.length < 4) { err.textContent = 'La contraseña debe tener al menos 4 caracteres.'; return; }
-    const ok = lsSet(AUTH_KEY, JSON.stringify({ user, pwd }));
-    if (!ok) {
-      err.textContent = 'Tu navegador no permite guardar datos locales. Prueba a abrirlo desde Chrome.';
-      return;
-    }
-    openApp();
-  } else {
-    // Login
-    if (user !== auth.user || pwd !== auth.pwd) {
-      err.textContent = 'Usuario o contraseña incorrectos.';
-      document.getElementById('login-pwd').value = '';
-      return;
-    }
-    openApp();
-  }
+  if (!nombre) { err.textContent = 'Escribe tu nombre para continuar.'; return; }
+  currentNombre = nombre;
+  currentUser   = nombre.toLowerCase().replace(/\s+/g,'_');
+  // Mostrar saludo y paso de contraseña
+  const auth = lsGet('auth_' + currentUser);
+  document.getElementById('saludo-usuario').textContent =
+    auth ? 'Hola, ' + nombre.split(' ')[0] + '. Introduce tu contraseña:' : 'Bienvenido/a, ' + nombre.split(' ')[0] + '. Crea una contraseña (mín. 4 dígitos):';
+  document.getElementById('paso-nombre').style.display = 'none';
+  document.getElementById('paso-pwd').style.display    = 'block';
+  document.getElementById('input-pwd').value = '';
+  document.getElementById('input-pwd').focus();
 }
 
-function openApp() {
-  sessionStorage.setItem('cartilla_session', '1');
-  document.getElementById('login-overlay').classList.add('hidden');
+function volverNombre() {
+  document.getElementById('paso-pwd').style.display    = 'none';
+  document.getElementById('paso-nombre').style.display = 'block';
+  document.getElementById('user-error').textContent    = '';
+}
+
+function entrarUsuario() {
+  const pwd = document.getElementById('input-pwd').value;
+  const err = document.getElementById('user-error');
+  err.textContent = '';
+  if (!pwd || pwd.length < 4) { err.textContent = 'La contraseña debe tener al menos 4 dígitos.'; return; }
+  const authKey  = 'auth_' + currentUser;
+  const authData = lsGet(authKey);
+  if (!authData) {
+    // Primera vez: guardar contraseña
+    lsSet(authKey, pwd);
+  } else {
+    if (authData !== pwd) { err.textContent = 'Contraseña incorrecta. Inténtalo de nuevo.'; return; }
+  }
+  localStorage.setItem('cartilla_usuario', currentUser);
+  localStorage.setItem('cartilla_nombre',  currentNombre);
+  document.getElementById('user-overlay').classList.add('hidden');
+  document.getElementById('label-usuario').textContent = currentNombre.split(' ')[0];
   initApp();
 }
 
-function doLogout() {
-  if (!confirm('¿Cerrar sesión?')) return;
-  sessionStorage.removeItem('cartilla_session');
-  location.reload();
-}
-
-function openPwdModal() {
-  document.getElementById('pwd-actual').value = '';
-  document.getElementById('pwd-nueva').value  = '';
-  document.getElementById('pwd-nueva2').value = '';
-  document.getElementById('pwd-modal-error').textContent = '';
-  document.getElementById('pwd-modal').classList.add('open');
-}
-function closePwdModal() {
-  document.getElementById('pwd-modal').classList.remove('open');
-}
-
-function doCambiarPwd() {
-  const actual = document.getElementById('pwd-actual').value;
-  const nueva  = document.getElementById('pwd-nueva').value;
-  const nueva2 = document.getElementById('pwd-nueva2').value;
-  const err    = document.getElementById('pwd-modal-error');
-  err.textContent = '';
-
-  const auth = getAuth();
-  if (actual !== auth.pwd) { err.textContent = 'La contraseña actual no es correcta.'; return; }
-  if (nueva.length < 4)   { err.textContent = 'La nueva contraseña debe tener al menos 4 caracteres.'; return; }
-  if (nueva !== nueva2)   { err.textContent = 'Las contraseñas nuevas no coinciden.'; return; }
-
-  lsSet(AUTH_KEY, JSON.stringify({ user: auth.user, pwd: nueva }));
-  closePwdModal();
-  toast('✓ Contraseña cambiada');
+function cambiarUsuario() {
+  localStorage.removeItem('cartilla_usuario');
+  localStorage.removeItem('cartilla_nombre');
+  currentUser   = '';
+  currentNombre = '';
+  document.getElementById('input-usuario').value = '';
+  document.getElementById('input-pwd').value     = '';
+  document.getElementById('user-error').textContent = '';
+  document.getElementById('paso-nombre').style.display = 'block';
+  document.getElementById('paso-pwd').style.display    = 'none';
+  document.getElementById('user-overlay').classList.remove('hidden');
 }
 
 // ── STORAGE ──
-const KEY = 'cartilla_v2';
+function userKey() { return 'cartilla_v2_' + (currentUser || 'default'); }
 function load() {
-  try { return JSON.parse(lsGet(KEY)) || {}; } catch { return {}; }
+  try { return JSON.parse(lsGet(userKey())) || {}; } catch { return {}; }
 }
-function save(data) { lsSet(KEY, JSON.stringify(data)); }
+function save(data) { lsSet(userKey(), JSON.stringify(data)); }
 function getData(section) { return load()[section] || []; }
 function setData(section, arr) {
   const d = load(); d[section] = arr; save(d);
 }
 
 // ── NAVIGATION ──
-const PAGE_ORDER = ['portada','tension','colesterol','azucar','observaciones','medicacion'];
-let currentPage = 'portada';
+const PAGE_ORDER = ['tension','peso','azucar','colesterol','observaciones','medicacion','valores'];
+let currentPage = 'tension';
 let animating = false;
 
 function goPage(name, btn) {
@@ -1228,15 +1229,19 @@ function fmtDate(s) {
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
-  // ── Check login ──
-  initLogin();
-  if (!sessionStorage.getItem('cartilla_session')) {
-    // Stay on login screen, don't init the app yet
-    // (overlay is shown by default)
-    return;
+  const usuario = localStorage.getItem('cartilla_usuario');
+  const nombre  = localStorage.getItem('cartilla_nombre');
+  if (usuario && nombre) {
+    currentUser   = usuario;
+    currentNombre = nombre;
+    document.getElementById('user-overlay').classList.add('hidden');
+    document.getElementById('label-usuario').textContent = nombre.split(' ')[0];
+    initApp();
   }
-  document.getElementById('login-overlay').classList.add('hidden');
-  initApp();
+  document.getElementById('input-usuario')
+    .addEventListener('keydown', e => { if (e.key === 'Enter') siguientePaso(); });
+  document.getElementById('input-pwd')
+    .addEventListener('keydown', e => { if (e.key === 'Enter') entrarUsuario(); });
 });
 
 function initApp() {
@@ -1249,6 +1254,8 @@ function initApp() {
   });
   document.getElementById('col-fecha').value = nowDate();
   document.getElementById('ob-fecha').value  = nowDate();
+  document.getElementById('pe-fecha').value  = nowDate();
+  document.getElementById('pe-hora').value   = nowTime();
 
   // load portada
   const d = load();
@@ -1264,34 +1271,53 @@ function initApp() {
 }  // end initApp
 
 // ── PORTADA ──
-function savePortada() {
-  const fields = ['nombre','fnac'];
-  const p = {};
-  fields.forEach(k => { p[k] = (document.getElementById('c-'+k)||{}).value || ''; });
-  const d = load(); d.portada = p; save(d);
-}
 
 // ── RENDER ALL ──
 function renderAll() {
-  renderMed(); renderTension(); renderColesterol(); renderAzucar(); renderObs();
+  renderMed(); renderTension(); renderColesterol(); renderAzucar(); renderObs(); renderPeso();
 }
 
 // ── BADGES ──
+// ── COLORES Y BADGES ──
+const C_OK   = '#16a34a';  // verde vivo
+const C_WARN = '#d97706';  // amarillo vivo
+const C_HIGH = '#dc2626';  // rojo vivo
+
+function nivelTension(s, d) {
+  if (s >= 140 || d >= 90) return 'high';
+  if (s >= 120 || d >= 80) return 'warn';
+  return 'ok';
+}
+function nivelColesterol(t) {
+  if (t >= 240) return 'high';
+  if (t >= 200) return 'warn';
+  return 'ok';
+}
+function nivelAzucar(v, mom) {
+  const post = mom === 'Postprandial';
+  if (v >= (post ? 200 : 126)) return 'high';
+  if (v >= (post ? 140 : 100)) return 'warn';
+  return 'ok';
+}
+
+function colorDe(nivel) {
+  return nivel === 'high' ? C_HIGH : nivel === 'warn' ? C_WARN : C_OK;
+}
+
 function badgeTension(s, d) {
-  if (s >= 140 || d >= 90) return '<span class="badge b-high">Alto</span>';
-  if (s >= 120 || d >= 80) return '<span class="badge b-warn">Elevado</span>';
-  return '<span class="badge b-ok">Normal</span>';
+  const n = nivelTension(s, d);
+  const label = n === 'high' ? 'Hipertensión' : n === 'warn' ? 'Normal-alta' : 'Óptima';
+  return `<span class="badge b-${n}">${label}</span>`;
 }
 function badgeColesterol(t) {
-  if (t >= 240) return '<span class="badge b-high">Alto</span>';
-  if (t >= 200) return '<span class="badge b-warn">Elevado</span>';
-  return '<span class="badge b-ok">Normal</span>';
+  const n = nivelColesterol(t);
+  const label = n === 'high' ? 'Alto' : n === 'warn' ? 'Elevado' : 'Óptimo';
+  return `<span class="badge b-${n}">${label}</span>`;
 }
 function badgeAzucar(v, mom) {
-  const post = mom === 'Postprandial';
-  if (v >= (post ? 200 : 126)) return '<span class="badge b-high">Alto</span>';
-  if (v >= (post ? 140 : 100)) return '<span class="badge b-warn">Elevado</span>';
-  return '<span class="badge b-ok">Normal</span>';
+  const n = nivelAzucar(v, mom);
+  const label = n === 'high' ? 'Diabetes' : n === 'warn' ? 'Prediabetes' : 'Normal';
+  return `<span class="badge b-${n}">${label}</span>`;
 }
 
 // ── MEDICACIÓN ──
@@ -1353,8 +1379,6 @@ function addTension() {
     hora:    document.getElementById('t-hora').value,
     sist: s, diast: d,
     pulso:   +document.getElementById('t-pulso').value || null,
-    brazo:   document.getElementById('t-brazo').value,
-    postura: document.getElementById('t-postura').value,
   };
   const arr = getData('tension');
   arr.unshift(entry);
@@ -1366,23 +1390,53 @@ function addTension() {
   toast('✓ Tensión guardada');
 }
 
+// ── PESO ──
+function addPeso() {
+  const kg    = parseFloat(document.getElementById('pe-kg').value);
+  const fecha = document.getElementById('pe-fecha').value;
+  const hora  = document.getElementById('pe-hora').value;
+  if (!kg || kg < 20 || kg > 300) { alert('Introduce un peso válido.'); return; }
+  const arr = getData('peso');
+  arr.unshift({ id: Date.now(), fecha, hora, kg });
+  setData('peso', arr);
+  document.getElementById('pe-kg').value   = '';
+  document.getElementById('pe-fecha').value = nowDate();
+  document.getElementById('pe-hora').value  = nowTime();
+  renderPeso();
+  toast('✓ Peso guardado');
+}
+
+function renderPeso() {
+  const arr = getData('peso');
+  const el  = document.getElementById('lista-peso');
+  if (!arr.length) { el.innerHTML = '<div class="empty">Aún no hay pesos registrados.</div>'; return; }
+  el.innerHTML = '<div class="data-table-wrap"><table><thead><tr><th>Fecha</th><th>Hora</th><th>Peso</th><th></th></tr></thead><tbody>' +
+    arr.map(r => `<tr>
+      <td>${fmtDate(r.fecha)}</td>
+      <td>${r.hora||'—'}</td>
+      <td><strong style="font-size:1.1rem">${r.kg} kg</strong></td>
+      <td><button class="del-btn" onclick="delEntry('peso',${r.id})">✕</button></td>
+    </tr>`).join('') +
+    '</tbody></table></div>';
+}
+
 function renderTension() {
   const arr = getData('tension');
   const tb  = document.getElementById('body-tension');
   const em  = document.getElementById('empty-tension');
   em.style.display = arr.length ? 'none' : '';
-  tb.innerHTML = arr.map(e => `
-    <tr>
+  tb.innerHTML = arr.map(e => {
+    const c = colorDe(nivelTension(e.sist, e.diast));
+    return `<tr>
       <td>${fmtDate(e.fecha)}</td>
       <td>${e.hora||'—'}</td>
-      <td><strong>${e.sist}</strong></td>
-      <td><strong>${e.diast}</strong></td>
+      <td><strong style="color:${c};font-size:1.1rem">${e.sist}</strong></td>
+      <td><strong style="color:${c};font-size:1.1rem">${e.diast}</strong></td>
       <td>${e.pulso||'—'}</td>
-      <td>${e.brazo||'—'}</td>
-      <td>${e.postura||'—'}</td>
       <td>${badgeTension(e.sist,e.diast)}</td>
-      <td><button class="btn-del-row" onclick="delEntry('tension',${e.id})">✕</button></td>
-    </tr>`).join('');
+      <td><button class="del-btn" onclick="delEntry('tension',${e.id})">✕</button></td>
+    </tr>`;
+  }).join('');
 }
 
 // ── COLESTEROL ──
@@ -1412,17 +1466,19 @@ function renderColesterol() {
   const tb  = document.getElementById('body-colesterol');
   const em  = document.getElementById('empty-colesterol');
   em.style.display = arr.length ? 'none' : '';
-  tb.innerHTML = arr.map(e => `
-    <tr>
+  tb.innerHTML = arr.map(e => {
+    const c = colorDe(nivelColesterol(e.total));
+    return `<tr>
       <td>${fmtDate(e.fecha)}</td>
       <td>${esc(e.lab||'—')}</td>
-      <td><strong>${e.total}</strong></td>
+      <td><strong style="color:${c};font-size:1.1rem">${e.total} mg/dL</strong></td>
       <td>${e.hdl||'—'}</td>
       <td>${e.ldl||'—'}</td>
       <td>${e.trig||'—'}</td>
       <td>${badgeColesterol(e.total)}</td>
-      <td><button class="btn-del-row" onclick="delEntry('colesterol',${e.id})">✕</button></td>
-    </tr>`).join('');
+      <td><button class="del-btn" onclick="delEntry('colesterol',${e.id})">✕</button></td>
+    </tr>`;
+  }).join('');
 }
 
 // ── AZÚCAR ──
@@ -1451,15 +1507,17 @@ function renderAzucar() {
   const tb  = document.getElementById('body-azucar');
   const em  = document.getElementById('empty-azucar');
   em.style.display = arr.length ? 'none' : '';
-  tb.innerHTML = arr.map(e => `
-    <tr>
+  tb.innerHTML = arr.map(e => {
+    const c = colorDe(nivelAzucar(e.valor, e.momento));
+    return `<tr>
       <td>${fmtDate(e.fecha)}</td>
       <td>${e.hora||'—'}</td>
-      <td><strong>${e.valor} mg/dL</strong></td>
+      <td><strong style="color:${c};font-size:1.1rem">${e.valor} mg/dL</strong></td>
       <td>${esc(e.momento)}</td>
       <td>${badgeAzucar(e.valor, e.momento)}</td>
-      <td><button class="btn-del-row" onclick="delEntry('azucar',${e.id})">✕</button></td>
-    </tr>`).join('');
+      <td><button class="del-btn" onclick="delEntry('azucar',${e.id})">✕</button></td>
+    </tr>`;
+  }).join('');
 }
 
 // ── OBSERVACIONES ──
@@ -1508,8 +1566,8 @@ function exportCSV(section) {
   if (!arr.length) { alert('No hay datos para exportar.'); return; }
   let rows = [];
   if (section === 'tension') {
-    rows = [['Fecha','Hora','Máxima','Mínima','Pulso','Brazo','Postura']];
-    arr.forEach(e => rows.push([e.fecha,e.hora||'',e.sist,e.diast,e.pulso||'',e.brazo||'',e.postura||'']));
+    rows = [['Fecha','Hora','Máxima','Mínima','Pulso']];
+    arr.forEach(e => rows.push([e.fecha,e.hora||'',e.sist,e.diast,e.pulso||'']));
   } else if (section === 'colesterol') {
     rows = [['Fecha','Laboratorio','Total','HDL','LDL','Triglicéridos']];
     arr.forEach(e => rows.push([e.fecha,e.lab||'',e.total,e.hdl||'',e.ldl||'',e.trig||'']));
@@ -1528,6 +1586,68 @@ function exportCSV(section) {
 // ── ESC HTML ──
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+// ── ICONO PWA (generado con canvas, sin archivos externos) ──
+(function () {
+  function dibujarIcono(size) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    const s = size, r = s * 0.18, pad = s * 0.13, arm = s * 0.30;
+
+    // Fondo verde oscuro redondeado
+    ctx.fillStyle = '#1a4731';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, s, s, r);
+    ctx.fill();
+
+    // Cruz blanca
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath();
+    // Barra vertical
+    ctx.roundRect(s/2 - arm/2, pad, arm, s - pad*2, arm * 0.2);
+    ctx.fill();
+    ctx.beginPath();
+    // Barra horizontal
+    ctx.roundRect(pad, s/2 - arm/2, s - pad*2, arm, arm * 0.2);
+    ctx.fill();
+
+    // Línea ECG verde claro encima
+    ctx.strokeStyle = '#4caf50';
+    ctx.lineWidth = s * 0.045;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    const y = s / 2, x0 = pad, x1 = s - pad;
+    const seg = (x1 - x0) / 8;
+    ctx.moveTo(x0,         y);
+    ctx.lineTo(x0+seg*2,   y);
+    ctx.lineTo(x0+seg*2.8, y - s*0.18);
+    ctx.lineTo(x0+seg*3.5, y + s*0.22);
+    ctx.lineTo(x0+seg*4.2, y - s*0.28);
+    ctx.lineTo(x0+seg*5,   y);
+    ctx.lineTo(x1,         y);
+    ctx.stroke();
+
+    return c.toDataURL('image/png');
+  }
+
+  // Apple touch icon (iOS)
+  const appleLink = document.createElement('link');
+  appleLink.rel  = 'apple-touch-icon';
+  appleLink.href = dibujarIcono(180);
+  document.head.appendChild(appleLink);
+
+  // Guardar iconos en caché para el manifest
+  if (window._iconCache) return;
+  window._iconCache = { i192: dibujarIcono(192), i512: dibujarIcono(512) };
+})();
+
+// ── SERVICE WORKER (PWA offline) ──
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/cartilla-salud/sw.js').catch(() => {});
+  });
 }
 </script>
 </body>

@@ -1,0 +1,26 @@
+{
+  "name": "Cartilla de Salud",
+  "short_name": "Cartilla",
+  "description": "Registro personal de tensión, peso, colesterol, azúcar y medicación",
+  "start_url": "/cartilla-salud/",
+  "scope": "/cartilla-salud/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1a4731",
+  "theme_color": "#1a4731",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
