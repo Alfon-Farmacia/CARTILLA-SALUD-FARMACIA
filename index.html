@@ -769,9 +769,9 @@
             <div class="fg"><label>Hora</label><input type="time" id="rg-t-hora"></div>
           </div>
           <div class="form-row3" style="margin-bottom:8px">
-            <div class="fg"><label>Máxima (mmHg)</label><input type="number" id="rg-t-sist" min="60" max="250" placeholder="120"></div>
-            <div class="fg"><label>Mínima (mmHg)</label><input type="number" id="rg-t-diast" min="40" max="150" placeholder="80"></div>
-            <div class="fg"><label>Pulso (ppm)</label><input type="number" id="rg-t-pulso" min="30" max="200" placeholder="70"></div>
+            <div class="fg"><label>Máxima (mmHg)</label><input type="number" id="rg-t-sist" min="60" max="250" placeholder="- -"></div>
+            <div class="fg"><label>Mínima (mmHg)</label><input type="number" id="rg-t-diast" min="40" max="150" placeholder="- -"></div>
+            <div class="fg"><label>Pulso (ppm)</label><input type="number" id="rg-t-pulso" min="30" max="200" placeholder="- -"></div>
           </div>
           <div class="btn-add-wrap"><button class="btn-add" onclick="addRegTension()">OK</button></div>
         </div>
@@ -784,7 +784,7 @@
           </div>
           <div class="fg" style="margin-bottom:8px">
             <label>Peso (kg)</label>
-            <input type="number" id="rg-pe-kg" placeholder="75.5" step="0.1" min="20" max="300">
+            <input type="number" id="rg-pe-kg" placeholder="- -" step="0.1" min="20" max="300">
           </div>
           <div class="btn-add-wrap"><button class="btn-add" onclick="addRegPeso()">OK</button></div>
         </div>
@@ -796,7 +796,7 @@
             <div class="fg"><label>Hora</label><input type="time" id="rg-az-hora"></div>
           </div>
           <div class="form-row" style="margin-bottom:0">
-            <div class="fg"><label>Glucosa (mg/dL)</label><input type="number" id="rg-az-val" min="20" max="600" placeholder="95"></div>
+            <div class="fg"><label>Glucosa (mg/dL)</label><input type="number" id="rg-az-val" min="20" max="600" placeholder="- -"></div>
             <div class="fg"><label>Momento</label>
               <select id="rg-az-momento">
                 <option value="Ayunas">En ayunas</option>
@@ -816,10 +816,10 @@
             <div class="fg"><label>Centro / Lab.</label><input type="text" id="rg-col-lab" placeholder="Ej: Centro de salud"></div>
           </div>
           <div class="form-row4" style="margin-bottom:0">
-            <div class="fg"><label>Total (mg/dL)</label><input type="number" id="rg-col-total" min="50" max="600" placeholder="190"></div>
-            <div class="fg"><label>HDL (mg/dL)</label><input type="number" id="rg-col-hdl" min="10" max="200" placeholder="55"></div>
-            <div class="fg"><label>LDL (mg/dL)</label><input type="number" id="rg-col-ldl" min="10" max="500" placeholder="115"></div>
-            <div class="fg"><label>Triglicér. (mg/dL)</label><input type="number" id="rg-col-trig" min="30" max="1000" placeholder="150"></div>
+            <div class="fg"><label>Total (mg/dL)</label><input type="number" id="rg-col-total" min="50" max="600" placeholder="- -"></div>
+            <div class="fg"><label>HDL (mg/dL)</label><input type="number" id="rg-col-hdl" min="10" max="200" placeholder="- -"></div>
+            <div class="fg"><label>LDL (mg/dL)</label><input type="number" id="rg-col-ldl" min="10" max="500" placeholder="- -"></div>
+            <div class="fg"><label>Triglicér. (mg/dL)</label><input type="number" id="rg-col-trig" min="30" max="1000" placeholder="- -"></div>
           </div>
           <div class="btn-add-wrap"><button class="btn-add" onclick="addRegColesterol()">OK</button></div>
         </div>
@@ -882,7 +882,7 @@
         </div>
         <div class="fg" style="margin-bottom:8px">
           <label>Peso (kg)</label>
-          <input type="number" id="pe-kg" placeholder="75.5" step="0.1" min="20" max="300">
+          <input type="number" id="pe-kg" placeholder="- -" step="0.1" min="20" max="300">
         </div>
         <div class="btn-add-wrap"><button class="btn-add" onclick="addPeso()">OK</button></div>
       </div>
@@ -984,15 +984,15 @@
         <div class="form-row3" style="margin-bottom:8px">
           <div class="fg">
             <label>Máxima (mmHg)</label>
-            <input type="number" id="t-sist" min="60" max="250" placeholder="120">
+            <input type="number" id="t-sist" min="60" max="250" placeholder="- -">
           </div>
           <div class="fg">
             <label>Mínima (mmHg)</label>
-            <input type="number" id="t-diast" min="40" max="150" placeholder="80">
+            <input type="number" id="t-diast" min="40" max="150" placeholder="- -">
           </div>
           <div class="fg">
             <label>Pulso (ppm)</label>
-            <input type="number" id="t-pulso" min="30" max="200" placeholder="70">
+            <input type="number" id="t-pulso" min="30" max="200" placeholder="- -">
           </div>
         </div>
         <div class="btn-add-wrap"><button class="btn-add" onclick="addTension()">OK</button></div>
@@ -1044,19 +1044,19 @@
         <div class="form-row4" style="margin-bottom:0">
           <div class="fg">
             <label>Total (mg/dL)</label>
-            <input type="number" id="col-total" min="50" max="600" placeholder="190">
+            <input type="number" id="col-total" min="50" max="600" placeholder="- -">
           </div>
           <div class="fg">
             <label>HDL (mg/dL)</label>
-            <input type="number" id="col-hdl" min="10" max="200" placeholder="55">
+            <input type="number" id="col-hdl" min="10" max="200" placeholder="- -">
           </div>
           <div class="fg">
             <label>LDL (mg/dL)</label>
-            <input type="number" id="col-ldl" min="10" max="500" placeholder="115">
+            <input type="number" id="col-ldl" min="10" max="500" placeholder="- -">
           </div>
           <div class="fg">
             <label>Triglicér. (mg/dL)</label>
-            <input type="number" id="col-trig" min="30" max="1000" placeholder="150">
+            <input type="number" id="col-trig" min="30" max="1000" placeholder="- -">
           </div>
         </div>
         <div class="btn-add-wrap"><button class="btn-add" onclick="addColesterol()">OK</button></div>
@@ -1109,7 +1109,7 @@
         <div class="form-row" style="margin-bottom:0">
           <div class="fg">
             <label>Glucosa (mg/dL)</label>
-            <input type="number" id="az-val" min="20" max="600" placeholder="95">
+            <input type="number" id="az-val" min="20" max="600" placeholder="- -">
           </div>
           <div class="fg">
             <label>Momento</label>
@@ -1327,23 +1327,26 @@ function goPage(name, btn) {
   currentPage = name;
 }
 
-// ── SWIPE VERTICAL CON DEDO ───────────────────────────────────────────────────
+// ── SWIPE HORIZONTAL CON DEDO ─────────────────────────────────────────────────
 function initDrag() {
   const area = document.getElementById('pages');
-  let y0 = null;
+  let x0 = null, y0 = null;
 
   area.addEventListener('touchstart', e => {
+    x0 = e.touches[0].clientX;
     y0 = e.touches[0].clientY;
   }, { passive: true });
 
   area.addEventListener('touchend', e => {
-    if (y0 === null) return;
+    if (x0 === null) return;
+    const dx = e.changedTouches[0].clientX - x0;
     const dy = e.changedTouches[0].clientY - y0;
-    y0 = null;
-    if (Math.abs(dy) < 40) return;
+    x0 = null; y0 = null;
+    // Solo actuar si el gesto es más horizontal que vertical
+    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
     const idx = PAGE_ORDER.indexOf(currentPage);
-    if (dy < 0 && idx < PAGE_ORDER.length - 1) goPage(PAGE_ORDER[idx + 1], null);
-    if (dy > 0 && idx > 0)                     goPage(PAGE_ORDER[idx - 1], null);
+    if (dx < 0 && idx < PAGE_ORDER.length - 1) goPage(PAGE_ORDER[idx + 1], null); // izquierda → siguiente
+    if (dx > 0 && idx > 0)                     goPage(PAGE_ORDER[idx - 1], null); // derecha → anterior
   }, { passive: true });
 }
 // ──────────────────────────────────────────────────────────────────────────────
