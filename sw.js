@@ -1,10 +1,10 @@
 // Service Worker — Cartilla de Salud
 const CACHE = 'cartilla-v4';
 const FILES = [
-  '/cartilla-salud/',
-  '/cartilla-salud/index.html',
-  '/cartilla-salud/manifest.json',
-  '/cartilla-salud/icon.svg'
+  '/CARTILLA-SALUD-FARMACIA/',
+  '/CARTILLA-SALUD-FARMACIA/index.html',
+  '/CARTILLA-SALUD-FARMACIA/manifest.json',
+  '/CARTILLA-SALUD-FARMACIA/icon.svg'
 ];
 
 self.addEventListener('install', e => {
