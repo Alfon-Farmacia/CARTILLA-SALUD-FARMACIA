@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>QR – Cartilla de Salud</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #e8f5ee;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 24px;
+      padding: 36px 28px 28px;
+      text-align: center;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.13);
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .logo {
+      width: 64px;
+      height: 64px;
+      margin: 0 auto 14px;
+      display: block;
+    }
+
+    h1 {
+      color: #1a4731;
+      font-size: 1.55rem;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: #555;
+      font-size: 0.92rem;
+      margin-bottom: 26px;
+    }
+
+    #qr-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 16px;
+      min-height: 220px;
+      align-items: center;
+    }
+
+    #qr-wrap table {
+      border-spacing: 0;
+      border-collapse: collapse;
+    }
+    #qr-wrap table td {
+      width: 7px; height: 7px;
+      padding: 0;
+    }
+    .qr-dark { background: #1a1a1a; }
+    .qr-light { background: #ffffff; }
+
+    .url-text {
+      font-size: 0.72rem;
+      color: #aaa;
+      word-break: break-all;
+      margin-bottom: 22px;
+    }
+
+    .steps {
+      background: #f4faf7;
+      border-radius: 14px;
+      padding: 16px 18px;
+      text-align: left;
+      margin-bottom: 20px;
+    }
+    .steps h3 {
+      color: #1a4731;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+    .steps ol {
+      padding-left: 18px;
+    }
+    .steps li {
+      font-size: 0.87rem;
+      color: #444;
+      margin-bottom: 7px;
+      line-height: 1.45;
+    }
+
+    .btn-print {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(to right, #1a4731, #2d6a4f);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: .03em;
+    }
+    .btn-print:active { opacity: .85; }
+
+    #msg-error {
+      color: #c0392b;
+      font-size: .88rem;
+      padding: 12px;
+      display: none;
+    }
+
+    @media print {
+      body { background: white; padding: 0; }
+      .btn-print { display: none; }
+      .card { box-shadow: none; border-radius: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="card">
+
+  <!-- Cruz médica (misma que la app) -->
+  <svg class="logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <clipPath id="cc">
+        <rect x="34" y="8" width="32" height="84" rx="8"/>
+        <rect x="8" y="34" width="84" height="32" rx="8"/>
+      </clipPath>
+    </defs>
+    <rect width="100" height="100" rx="16" fill="#1a4731"/>
+    <rect x="0" y="0" width="100" height="50" fill="#4caf50" clip-path="url(#cc)"/>
+    <rect x="0" y="50" width="100" height="50" fill="#1a7a3c" clip-path="url(#cc)"/>
+    <polyline points="8,50 26,50 34,40 38,60 42,28 46,72 50,50 92,50"
+      fill="none" stroke="white" stroke-width="3.5"
+      stroke-linecap="round" stroke-linejoin="round" clip-path="url(#cc)"/>
+  </svg>
+
+  <h1>Cartilla de Salud</h1>
+  <p class="subtitle">Escanea con la cámara del móvil</p>
+
+  <div id="qr-wrap">
+    <span style="color:#aaa;font-size:.85rem">Generando código QR…</span>
+  </div>
+
+  <p id="msg-error">
+    Sin conexión a internet. Conéctate y recarga la página para ver el QR.
+  </p>
+
+  <div class="url-text">alfon-farmacia.github.io/cartilla-salud/</div>
+
+  <div class="steps">
+    <h3>¿Cómo instalar la app?</h3>
+    <ol>
+      <li>Abre la <strong>cámara</strong> del móvil Android</li>
+      <li>Apunta al código QR unos segundos</li>
+      <li>Pulsa el enlace que aparece en pantalla</li>
+      <li>En Chrome: menú <strong>⋮ → "Añadir a pantalla de inicio"</strong></li>
+    </ol>
+  </div>
+
+  <button class="btn-print" onclick="window.print()">🖨&nbsp; Imprimir este QR</button>
+</div>
+
+<!-- Biblioteca QR: qrcode-generator (MIT) cargada desde CDN -->
+<script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js"
+  onerror="document.getElementById('msg-error').style.display='block';document.getElementById('qr-wrap').innerHTML='';">
+</script>
+<script>
+  (function () {
+    if (typeof qrcode === 'undefined') return;
+
+    var url  = 'https://alfon-farmacia.github.io/cartilla-salud/';
+    var qr   = qrcode(4, 'M');   // versión 4, corrección media
+    qr.addData(url);
+    qr.make();
+
+    var n    = qr.getModuleCount();
+    var html = '<table>';
+    for (var r = 0; r < n; r++) {
+      html += '<tr>';
+      for (var c = 0; c < n; c++) {
+        html += '<td class="' + (qr.isDark(r, c) ? 'qr-dark' : 'qr-light') + '"></td>';
+      }
+      html += '</tr>';
+    }
+    html += '</table>';
+
+    document.getElementById('qr-wrap').innerHTML = html;
+  })();
+</script>
+</body>
+</html>
