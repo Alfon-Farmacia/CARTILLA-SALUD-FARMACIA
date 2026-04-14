@@ -553,6 +553,85 @@
     }
     .btn-export:active { background: #f3f4f6; }
 
+    /* ── RGPD OVERLAY ── */
+    #rgpd-overlay {
+      position: fixed; inset: 0;
+      background: linear-gradient(170deg, #1a4731 0%, #2d6a4f 55%, #52b788 100%);
+      display: flex; align-items: flex-start; justify-content: center;
+      z-index: 10000; font-family: 'Georgia', serif;
+      padding: 16px; overflow-y: auto;
+    }
+    #rgpd-overlay.hidden { display: none; }
+    .rgpd-box {
+      background: #fff; border-radius: 20px;
+      padding: 28px 24px 24px; width: 100%; max-width: 480px;
+      box-shadow: 0 12px 50px rgba(0,0,0,.35);
+      margin: auto;
+    }
+    .rgpd-logo { width: 60px; height: 60px; display: block; margin: 0 auto 12px; }
+    .rgpd-titulo {
+      text-align: center; font-size: 1.25rem; font-weight: bold;
+      color: #1a4731; margin-bottom: 4px;
+    }
+    .rgpd-subtitulo {
+      text-align: center; font-size: .85rem; color: #666;
+      margin-bottom: 18px; font-style: italic;
+    }
+    .rgpd-tabs {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .rgpd-tab {
+      flex: 1; min-width: 100px; padding: 9px 6px;
+      border: 2px solid #b7deca; border-radius: 10px;
+      background: #f4faf7; color: #1a4731;
+      font-family: Georgia, serif; font-size: .78rem;
+      font-weight: bold; cursor: pointer; text-align: center;
+      transition: background .15s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .rgpd-tab.active { background: #1a4731; color: #fff; border-color: #1a4731; }
+    .rgpd-doc {
+      display: none; background: #f9fdfb; border: 1px solid #b7deca;
+      border-radius: 12px; padding: 16px; font-size: .88rem;
+      line-height: 1.7; color: #1a3325; max-height: 240px;
+      overflow-y: auto; margin-bottom: 16px;
+    }
+    .rgpd-doc.visible { display: block; }
+    .rgpd-doc h3 { color: #1a4731; font-size: .95rem; margin: 12px 0 6px; }
+    .rgpd-doc p { margin-bottom: 8px; }
+    .rgpd-doc ul { margin: 4px 0 8px 18px; }
+    .rgpd-doc li { margin-bottom: 3px; }
+    .rgpd-checks { margin-bottom: 18px; }
+    .rgpd-check {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 10px 0; border-bottom: 1px solid #e8f5ee;
+      cursor: pointer; -webkit-tap-highlight-color: transparent;
+    }
+    .rgpd-check:last-child { border-bottom: none; }
+    .rgpd-check input[type="checkbox"] {
+      width: 22px; height: 22px; flex-shrink: 0;
+      accent-color: #1a4731; cursor: pointer; margin-top: 1px;
+    }
+    .rgpd-check span { font-size: .92rem; color: #1a3325; line-height: 1.55; }
+    .rgpd-error {
+      color: #c0392b; font-size: .88rem; margin-bottom: 10px;
+      font-family: sans-serif; font-weight: bold; min-height: 18px;
+      text-align: center;
+    }
+    .rgpd-btn {
+      width: 100%; padding: 18px;
+      background: linear-gradient(to right, #1a4731, #2d6a4f);
+      color: #fff; border: none; border-radius: 12px;
+      font-family: Georgia, serif; font-size: 1.1rem;
+      font-weight: bold; cursor: pointer; transition: opacity .15s;
+    }
+    .rgpd-btn:active { opacity: .85; }
+    .rgpd-nota {
+      text-align: center; font-size: .75rem; color: #999;
+      margin-top: 10px; font-family: sans-serif;
+    }
+
     /* ── PANTALLA DE INICIO (login) ── */
     #user-overlay {
       position: fixed; inset: 0;
@@ -618,6 +697,126 @@
   </style>
 </head>
 <body>
+
+<!-- ── PANTALLA RGPD ── -->
+<div id="rgpd-overlay" class="hidden">
+  <div class="rgpd-box">
+    <svg class="rgpd-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs><clipPath id="cc2"><rect x="34" y="8" width="32" height="84" rx="8"/><rect x="8" y="34" width="84" height="32" rx="8"/></clipPath></defs>
+      <rect width="100" height="100" rx="16" fill="#1a4731"/>
+      <rect x="0" y="0" width="100" height="50" fill="#4caf50" clip-path="url(#cc2)"/>
+      <rect x="0" y="50" width="100" height="50" fill="#1a7a3c" clip-path="url(#cc2)"/>
+      <polyline points="8,50 26,50 34,40 38,60 42,28 46,72 50,50 92,50" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" clip-path="url(#cc2)"/>
+    </svg>
+    <div class="rgpd-titulo">Protección de Datos</div>
+    <div class="rgpd-subtitulo">Farmacia Alfonso Moraleda · M-1577<br>Lea y acepte los siguientes documentos para continuar</div>
+
+    <!-- Pestañas de documentos -->
+    <div class="rgpd-tabs">
+      <button class="rgpd-tab active" onclick="verDocRgpd('politica',this)">Política de Privacidad</button>
+      <button class="rgpd-tab" onclick="verDocRgpd('consentimiento',this)">Consentimiento</button>
+      <button class="rgpd-tab" onclick="verDocRgpd('derechos',this)">Sus Derechos</button>
+      <button class="rgpd-tab" onclick="verDocRgpd('uso',this)">Uso de la App</button>
+    </div>
+
+    <!-- Documento 1: Política de privacidad -->
+    <div id="rgpd-doc-politica" class="rgpd-doc visible">
+      <h3>1. Responsable del tratamiento</h3>
+      <p>Alfonso Moraleda Conejo · NIF 53666244-E · Col. nº 23192 (ICOFM)<br>
+      Farmacia Alfonso Moraleda (M-1577)<br>
+      Av. Nuestra Señora de Fátima, 97 · 28047 Madrid<br>
+      farmaciasenorafatima@gmail.com</p>
+      <h3>2. Finalidad del tratamiento</h3>
+      <p>Sus datos de salud se tratan para ofrecerle seguimiento farmacoterapéutico personalizado: control de tensión arterial, glucosa, colesterol, peso y medicación habitual a través de la app <strong>Cartilla de Salud</strong>.</p>
+      <h3>3. Base jurídica</h3>
+      <p>Su consentimiento explícito (Art. 9.2.a RGPD), dado que sus datos son datos de salud de categoría especial y máxima protección legal según el RGPD (UE) 2016/679 y la LOPDGDD 3/2018.</p>
+      <h3>4. Datos tratados</h3>
+      <ul>
+        <li><strong>Identificativos:</strong> nombre y contraseña de acceso.</li>
+        <li><strong>Datos de salud:</strong> tensión arterial, glucosa, colesterol, triglicéridos, peso, medicación y observaciones clínicas.</li>
+      </ul>
+      <h3>5. Conservación</h3>
+      <p>Mientras mantenga su relación con la farmacia o solicite la supresión. Mínimo 5 años por normativa sanitaria de la Comunidad de Madrid.</p>
+      <h3>6. Destinatarios</h3>
+      <p>Farmacéutico titular y equipo sanitario autorizado. Con su permiso, su médico de cabecera. No se ceden a terceros ni se transfieren fuera de la UE.</p>
+    </div>
+
+    <!-- Documento 2: Consentimiento -->
+    <div id="rgpd-doc-consentimiento" class="rgpd-doc">
+      <h3>Consentimiento informado para el tratamiento de datos de salud</h3>
+      <p>En cumplimiento del <strong>Reglamento (UE) 2016/679</strong> (RGPD), la <strong>Ley Orgánica 3/2018</strong> (LOPDGDD) y la <strong>Ley 41/2002</strong> de autonomía del paciente, al aceptar este documento usted:</p>
+      <ul>
+        <li>Ha sido informado/a de forma clara sobre el tratamiento de sus datos de salud.</li>
+        <li>Consiente expresamente el tratamiento de sus datos de salud para el seguimiento farmacoterapéutico por parte del farmacéutico titular y su equipo.</li>
+        <li>Entiende que puede retirar este consentimiento en cualquier momento escribiendo a <strong>farmaciasenorafatima@gmail.com</strong> sin que ello afecte a los datos tratados con anterioridad.</li>
+        <li>Ha recibido información sobre la Política de Privacidad de la Farmacia Alfonso Moraleda.</li>
+      </ul>
+      <p>Este consentimiento es <strong>voluntario, libre, específico, informado e inequívoco</strong>, tal y como exige el Art. 7 del RGPD para el tratamiento de datos de categoría especial (datos de salud).</p>
+      <p>Se le facilitará copia en papel del consentimiento firmado si lo solicita en la farmacia.</p>
+    </div>
+
+    <!-- Documento 3: Derechos -->
+    <div id="rgpd-doc-derechos" class="rgpd-doc">
+      <h3>Sus derechos sobre sus datos personales</h3>
+      <p>Conforme al RGPD y la LOPDGDD, usted tiene derecho a:</p>
+      <ul>
+        <li><strong>Acceso:</strong> conocer qué datos suyos tratamos y obtener una copia.</li>
+        <li><strong>Rectificación:</strong> corregir datos inexactos o incompletos.</li>
+        <li><strong>Supresión:</strong> solicitar que eliminemos sus datos ("derecho al olvido").</li>
+        <li><strong>Limitación:</strong> pedir que restrinjamos el tratamiento en determinadas circunstancias.</li>
+        <li><strong>Portabilidad:</strong> recibir sus datos en formato legible para trasladarlos a otro servicio.</li>
+        <li><strong>Oposición:</strong> oponerse al tratamiento de sus datos en cualquier momento.</li>
+        <li><strong>Retirada del consentimiento:</strong> sin efecto sobre el tratamiento previo.</li>
+      </ul>
+      <h3>¿Cómo ejercer sus derechos?</h3>
+      <p>Dirigiéndose a <strong>farmaciasenorafatima@gmail.com</strong> o presencialmente en la Farmacia Alfonso Moraleda, Av. Nuestra Señora de Fátima, 97 · 28047 Madrid.</p>
+      <h3>Reclamaciones</h3>
+      <p>Si considera que sus derechos no han sido atendidos, puede presentar una reclamación ante la <strong>Agencia Española de Protección de Datos (AEPD)</strong> en <em>www.aepd.es</em>.</p>
+    </div>
+
+    <!-- Documento 4: Uso de la app -->
+    <div id="rgpd-doc-uso" class="rgpd-doc">
+      <h3>Condiciones de uso de la Cartilla de Salud</h3>
+      <p>La aplicación <strong>Cartilla de Salud</strong> es una herramienta de seguimiento de parámetros de salud ofrecida por la Farmacia Alfonso Moraleda (M-1577).</p>
+      <h3>¿Qué hace la app?</h3>
+      <ul>
+        <li>Registra sus mediciones de tensión arterial, glucosa, colesterol, peso y medicación.</li>
+        <li>Almacena sus datos de forma segura con acceso mediante contraseña personal.</li>
+        <li>Permite al farmacéutico y, con su autorización, a su médico, consultar su historial.</li>
+      </ul>
+      <h3>Seguridad</h3>
+      <p>Sus datos se transmiten cifrados mediante HTTPS. El acceso está protegido por contraseña. El personal de la farmacia está sujeto al deber de secreto profesional.</p>
+      <h3>Menores de edad</h3>
+      <p>Si el paciente es menor de 14 años, el consentimiento debe ser otorgado por su representante legal (padre, madre o tutor).</p>
+      <h3>Contacto</h3>
+      <p>Farmacia Alfonso Moraleda · farmaciasenorafatima@gmail.com · Av. Nuestra Señora de Fátima, 97 · 28047 Madrid</p>
+    </div>
+
+    <!-- Casillas de aceptación -->
+    <div class="rgpd-checks">
+      <label class="rgpd-check">
+        <input type="checkbox" id="rgpd-chk1">
+        <span>He leído y acepto la <strong>Política de Privacidad</strong> de la Farmacia Alfonso Moraleda.</span>
+      </label>
+      <label class="rgpd-check">
+        <input type="checkbox" id="rgpd-chk2">
+        <span>Doy mi <strong>consentimiento expreso</strong> para el tratamiento de mis datos de salud con fines de seguimiento farmacoterapéutico.</span>
+      </label>
+      <label class="rgpd-check">
+        <input type="checkbox" id="rgpd-chk3">
+        <span>He sido informado/a de mis <strong>derechos</strong> sobre mis datos personales y sé cómo ejercerlos.</span>
+      </label>
+      <label class="rgpd-check">
+        <input type="checkbox" id="rgpd-chk4">
+        <span>Acepto las <strong>condiciones de uso</strong> de la aplicación Cartilla de Salud.</span>
+      </label>
+    </div>
+
+    <div class="rgpd-error" id="rgpd-error"></div>
+    <button class="rgpd-btn" onclick="aceptarRgpd()">Acepto y continúo →</button>
+    <p class="rgpd-nota">Debe aceptar todos los puntos para usar la aplicación.<br>Puede solicitar copia impresa en la farmacia.</p>
+  </div>
+</div>
 
 <!-- ── PANTALLA DE INICIO ── -->
 <div id="user-overlay">
@@ -1237,6 +1436,44 @@
 function lsGet(k)    { try { return localStorage.getItem(k); }    catch { return null; } }
 function lsSet(k, v) { try { localStorage.setItem(k, v); return true; } catch { return false; } }
 
+// ── RGPD ──
+function verDocRgpd(id, btn) {
+  document.querySelectorAll('.rgpd-doc').forEach(d => d.classList.remove('visible'));
+  document.querySelectorAll('.rgpd-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('rgpd-doc-' + id).classList.add('visible');
+  btn.classList.add('active');
+}
+
+function aceptarRgpd() {
+  const err = document.getElementById('rgpd-error');
+  const checks = ['rgpd-chk1','rgpd-chk2','rgpd-chk3','rgpd-chk4'];
+  const todos = checks.every(id => document.getElementById(id).checked);
+  if (!todos) {
+    err.textContent = 'Debe marcar todas las casillas para continuar.';
+    return;
+  }
+  err.textContent = '';
+  lsSet('rgpd_aceptado_' + (currentUser || 'pendiente'), new Date().toISOString());
+  document.getElementById('rgpd-overlay').classList.add('hidden');
+  if (window._rgpdCallback) {
+    // Usuario ya logueado, entrar directamente
+    window._rgpdCallback();
+    window._rgpdCallback = null;
+  } else if (!currentUser) {
+    // Nuevo usuario, mostrar login
+    document.getElementById('user-overlay').classList.remove('hidden');
+  }
+}
+
+function mostrarRgpdSiNecesario() {
+  const yaAceptado = lsGet('rgpd_aceptado_' + (currentUser || 'pendiente'));
+  if (!yaAceptado) {
+    document.getElementById('rgpd-overlay').classList.remove('hidden');
+    return true;
+  }
+  return false;
+}
+
 // ── USUARIO Y LOGIN ──
 let currentUser = '';
 let currentNombre = '';
@@ -1279,6 +1516,11 @@ function entrarUsuario() {
   }
   localStorage.setItem('cartilla_usuario', currentUser);
   localStorage.setItem('cartilla_nombre',  currentNombre);
+  // Traspasar aceptación RGPD del usuario 'pendiente' al usuario real
+  const rgpdPendiente = lsGet('rgpd_aceptado_pendiente');
+  if (rgpdPendiente) {
+    lsSet('rgpd_aceptado_' + currentUser, rgpdPendiente);
+  }
   document.getElementById('user-overlay').classList.add('hidden');
   document.getElementById('label-usuario').textContent = currentNombre.split(' ')[0];
   initApp();
@@ -1375,9 +1617,27 @@ document.addEventListener('DOMContentLoaded', () => {
   if (usuario && nombre) {
     currentUser   = usuario;
     currentNombre = nombre;
+    // Comprobar si ya aceptó el RGPD
+    const rgpdOk = lsGet('rgpd_aceptado_' + currentUser);
+    if (!rgpdOk) {
+      // Mostrar RGPD antes de entrar
+      document.getElementById('rgpd-overlay').classList.remove('hidden');
+      document.getElementById('user-overlay').classList.add('hidden');
+      // Cuando acepte el RGPD, entrar directamente
+      window._rgpdCallback = () => {
+        document.getElementById('user-overlay').classList.add('hidden');
+        document.getElementById('label-usuario').textContent = nombre.split(' ')[0];
+        initApp();
+      };
+    } else {
+      document.getElementById('user-overlay').classList.add('hidden');
+      document.getElementById('label-usuario').textContent = nombre.split(' ')[0];
+      initApp();
+    }
+  } else {
+    // Mostrar RGPD antes del login
+    document.getElementById('rgpd-overlay').classList.remove('hidden');
     document.getElementById('user-overlay').classList.add('hidden');
-    document.getElementById('label-usuario').textContent = nombre.split(' ')[0];
-    initApp();
   }
   document.getElementById('input-usuario')
     .addEventListener('keydown', e => { if (e.key === 'Enter') siguientePaso(); });
