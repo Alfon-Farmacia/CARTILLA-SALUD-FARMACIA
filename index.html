@@ -515,6 +515,71 @@
     .obs-entry-date { font-size: .7rem; color: var(--ink-soft); margin-bottom: 4px; font-family: sans-serif; }
     .obs-entry-text { font-size: .88rem; line-height: 1.5; white-space: pre-wrap; }
 
+    /* ── ALARMAS / RECORDATORIOS ── */
+    .alarm-check-row {
+      display: flex; align-items: center;
+      margin: 10px 0 4px;
+    }
+    .alarm-check-row label {
+      display: flex; align-items: center; gap: 8px;
+      font-size: .92rem; font-weight: bold; color: var(--spine2);
+      cursor: pointer; user-select: none;
+    }
+    .alarm-check-row input[type="checkbox"] {
+      width: 20px; height: 20px; cursor: pointer;
+      accent-color: var(--spine2);
+    }
+    .alarm-extra {
+      background: rgba(26,71,49,.07);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 4px;
+    }
+    .alarm-row {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .alarm-row input[type="time"],
+    .alarm-row input[type="date"],
+    .alarm-row select {
+      flex: 1; min-width: 100px;
+      padding: 8px 10px;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      font-size: .88rem;
+      background: #fff;
+      color: var(--ink);
+    }
+    .alarm-list-section {
+      margin-top: 16px;
+      background: rgba(255,255,255,.45);
+      border-radius: 14px;
+      padding: 12px 14px 10px;
+    }
+    .alarm-list-section .section-label { margin-bottom: 8px; }
+    .alarm-item {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,.75);
+      border-radius: 10px;
+      padding: 9px 11px;
+      margin-top: 8px;
+    }
+    .alarm-item.alarm-off { opacity: .5; }
+    .alarm-item-info { flex: 1; }
+    .alarm-item-title { font-size: .88rem; font-weight: bold; color: var(--ink); }
+    .alarm-item-sub   { font-size: .72rem; color: var(--ink-soft); margin-top: 2px; }
+    .alarm-bell { font-size: 1.2rem; }
+    .alarm-toggle {
+      background: none; border: none; cursor: pointer;
+      font-size: 1.1rem; padding: 4px 6px; border-radius: 6px;
+    }
+    .alarm-toggle:active { background: rgba(0,0,0,.08); }
+    .alarm-notif-warn {
+      background: #fff3cd; border-left: 3px solid #ffc107;
+      border-radius: 0 8px 8px 0; padding: 8px 12px;
+      font-size: .8rem; color: #7a5c00;
+      margin-bottom: 8px; cursor: pointer; display: none;
+    }
+
     /* ── TOAST ── */
     #toast {
       position: fixed;
@@ -535,23 +600,23 @@
     }
     #toast.show { opacity: 1; transform: translateX(-50%) scale(1); }
 
-    /* ── EXPORT BTN ── */
+    /* ── EXPORT BTNS ── */
+    .export-wrap {
+      display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap;
+    }
     .btn-export {
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      display: flex; align-items: center; gap: 6px;
       padding: 8px 14px;
       background: transparent;
-      border: 1px solid var(--line);
-      border-radius: 6px;
-      font-family: sans-serif;
-      font-size: .75rem;
-      color: var(--ink-soft);
-      cursor: pointer;
-      margin-bottom: 14px;
-      transition: background .15s;
+      border: 1.5px solid var(--line);
+      border-radius: 8px;
+      font-family: sans-serif; font-size: .78rem;
+      cursor: pointer; transition: background .15s;
     }
-    .btn-export:active { background: #f3f4f6; }
+    .btn-export.excel { color: #1e7e34; border-color: #1e7e34; }
+    .btn-export.excel:active { background: #e6f4ea; }
+    .btn-export.pdf   { color: #b71c1c; border-color: #b71c1c; }
+    .btn-export.pdf:active   { background: #fdecea; }
 
     /* ── RGPD OVERLAY ── */
     #rgpd-overlay {
@@ -1135,7 +1200,7 @@
             <input type="text" id="m-acostarse" placeholder="—" style="text-align:center">
           </div>
         </div>
-        <div class="form-row" style="margin-bottom:0">
+        <div class="form-row" style="margin-bottom:6px">
           <div class="fg">
             <label>Fecha inicial</label>
             <input type="date" id="m-finicio">
@@ -1143,6 +1208,24 @@
           <div class="fg">
             <label>Fecha final</label>
             <input type="text" id="m-ffinal" placeholder="CRÓNICO">
+          </div>
+        </div>
+        <!-- Checkbox recordatorio medicación -->
+        <div class="alarm-check-row">
+          <label>
+            <input type="checkbox" id="med-alarm-chk" onchange="toggleAlarmExtra('med')">
+            🔔 Recordatorio de toma
+          </label>
+        </div>
+        <div id="med-alarm-extra" class="alarm-extra" style="display:none">
+          <div class="alarm-row">
+            <input type="time" id="med-alarm-hora" placeholder="Hora del aviso">
+            <select id="med-alarm-rep" onchange="toggleAlarmFecha('med')">
+              <option value="daily">Cada día</option>
+              <option value="once">Una vez</option>
+              <option value="weekly">Cada semana</option>
+            </select>
+            <input type="date" id="med-alarm-fecha" style="display:none">
           </div>
         </div>
         <div class="btn-add-wrap"><button class="btn-add" onclick="addMed()">OK</button></div>
@@ -1164,6 +1247,13 @@
           </thead>
           <tbody id="body-med"></tbody>
         </table>
+      </div>
+
+      <!-- Lista recordatorios activos medicación -->
+      <div class="alarm-list-section" id="alarm-section-med" style="display:none">
+        <div class="section-label">🔔 Recordatorios activos</div>
+        <div class="alarm-notif-warn" id="alarm-warn-med" onclick="pedirPermisoNotif()"></div>
+        <div id="lista-alarms-med"></div>
       </div>
     </div>
 
@@ -1203,10 +1293,16 @@
         <div class="btn-add-wrap"><button class="btn-add" onclick="addTension()">OK</button></div>
       </div>
 
-      <button class="btn-export" onclick="exportCSV('tension')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar CSV
-      </button>
+      <div class="export-wrap">
+        <button class="btn-export excel" onclick="exportExcel('tension')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar Excel
+        </button>
+        <button class="btn-export pdf" onclick="exportPDF('tension')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar PDF
+        </button>
+      </div>
 
       <div class="data-table-wrap">
         <table>
@@ -1267,10 +1363,16 @@
         <div class="btn-add-wrap"><button class="btn-add" onclick="addColesterol()">OK</button></div>
       </div>
 
-      <button class="btn-export" onclick="exportCSV('colesterol')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar CSV
-      </button>
+      <div class="export-wrap">
+        <button class="btn-export excel" onclick="exportExcel('colesterol')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar Excel
+        </button>
+        <button class="btn-export pdf" onclick="exportPDF('colesterol')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar PDF
+        </button>
+      </div>
 
       <div class="data-table-wrap">
         <table>
@@ -1319,20 +1421,24 @@
           <div class="fg">
             <label>Momento</label>
             <select id="az-momento">
-              <option value="Ayunas">En ayunas</option>
-              <option value="Postprandial">Postprandial (2h)</option>
-              <option value="Antes de comer">Antes de comer</option>
-              <option value="Aleatorio">Aleatorio</option>
+              <option value="Ayuno">Ayuno</option>
+              <option value="No Ayuno">No Ayuno</option>
             </select>
           </div>
         </div>
         <div class="btn-add-wrap"><button class="btn-add" onclick="addAzucar()">OK</button></div>
       </div>
 
-      <button class="btn-export" onclick="exportCSV('azucar')">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar CSV
-      </button>
+      <div class="export-wrap">
+        <button class="btn-export excel" onclick="exportExcel('azucar')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar Excel
+        </button>
+        <button class="btn-export pdf" onclick="exportPDF('azucar')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Exportar PDF
+        </button>
+      </div>
 
       <div class="data-table-wrap">
         <table>
@@ -1365,14 +1471,39 @@
           <label>Fecha</label>
           <input type="date" id="ob-fecha">
         </div>
-        <div class="fg" style="margin-bottom:0">
+        <div class="fg" style="margin-bottom:6px">
           <label>Observación</label>
           <textarea id="ob-texto" placeholder="Escribe aquí cualquier observación, síntoma, visita médica, cambio de medicación..."></textarea>
+        </div>
+        <!-- Checkbox recordatorio -->
+        <div class="alarm-check-row">
+          <label>
+            <input type="checkbox" id="ob-alarm-chk" onchange="toggleAlarmExtra('ob')">
+            🔔 Crear recordatorio
+          </label>
+        </div>
+        <div id="ob-alarm-extra" class="alarm-extra" style="display:none">
+          <div class="alarm-row">
+            <input type="time" id="ob-alarm-hora" placeholder="Hora del aviso">
+            <select id="ob-alarm-rep" onchange="toggleAlarmFecha('ob')">
+              <option value="daily">Cada día</option>
+              <option value="once">Una vez</option>
+              <option value="weekly">Cada semana</option>
+            </select>
+            <input type="date" id="ob-alarm-fecha" style="display:none">
+          </div>
         </div>
         <div class="btn-add-wrap"><button class="btn-add" onclick="addObs()">OK</button></div>
       </div>
 
       <div id="lista-obs"><div class="empty">Aún no hay observaciones registradas.</div></div>
+
+      <!-- Lista recordatorios activos -->
+      <div class="alarm-list-section" id="alarm-section-obs" style="display:none">
+        <div class="section-label">🔔 Recordatorios activos</div>
+        <div class="alarm-notif-warn" id="alarm-warn-obs" onclick="pedirPermisoNotif()"></div>
+        <div id="lista-alarms-obs"></div>
+      </div>
     </div>
 
     <!-- TABLA DE VALORES DE REFERENCIA -->
@@ -1652,6 +1783,10 @@ function initApp() {
   }
 
   renderAll();
+
+  // Arrancar comprobador de alarmas (cada minuto)
+  checkAlarms();
+  setInterval(checkAlarms, 60000);
 }  // end initApp
 
 // ── PORTADA ──
@@ -1659,6 +1794,7 @@ function initApp() {
 // ── RENDER ALL ──
 function renderAll() {
   renderMed(); renderTension(); renderColesterol(); renderAzucar(); renderObs(); renderPeso();
+  renderAlarms('obs'); renderAlarms('med');
 }
 
 // ── BADGES ──
@@ -1678,9 +1814,9 @@ function nivelColesterol(t) {
   return 'ok';
 }
 function nivelAzucar(v, mom) {
-  const post = mom === 'Postprandial';
-  if (v >= (post ? 200 : 126)) return 'high';
-  if (v >= (post ? 140 : 100)) return 'warn';
+  const noAyuno = mom === 'No Ayuno';
+  if (v >= (noAyuno ? 200 : 126)) return 'high';
+  if (v >= (noAyuno ? 140 : 100)) return 'warn';
   return 'ok';
 }
 
@@ -1725,7 +1861,10 @@ function addMed() {
   setData('med', arr);
   ['m-nombre','m-unidades','m-via','m-desayuno','m-comida','m-cena','m-acostarse','m-ffinal'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('m-finicio').value = '';
+  // Crear alarma si el checkbox está marcado
+  crearAlarmaSiProcede('med', nombre);
   renderMed();
+  renderAlarms('med');
   toast('✓ Fármaco añadido');
 }
 
@@ -1916,9 +2055,12 @@ function addObs() {
   const arr = getData('obs');
   arr.unshift(entry);
   setData('obs', arr);
+  // Crear alarma si el checkbox está marcado
+  crearAlarmaSiProcede('ob', texto.length > 60 ? texto.slice(0,57)+'…' : texto);
   document.getElementById('ob-texto').value = '';
   document.getElementById('ob-fecha').value = nowDate();
   renderObs();
+  renderAlarms('obs');
   toast('✓ Observación guardada');
 }
 
@@ -1937,6 +2079,158 @@ function renderObs() {
     </div>`).join('');
 }
 
+// ── ALARMAS / RECORDATORIOS ──
+function getAlarms()    { return getData('alarms') || []; }
+function setAlarms(arr) { setData('alarms', arr); }
+
+// Mostrar/ocultar campos extra al marcar el checkbox
+function toggleAlarmExtra(prefix) {
+  const chk   = document.getElementById(prefix + '-alarm-chk');
+  const extra = document.getElementById(prefix + '-alarm-extra');
+  if (extra) extra.style.display = chk.checked ? '' : 'none';
+}
+
+// Mostrar/ocultar campo fecha según frecuencia
+function toggleAlarmFecha(prefix) {
+  const rep   = document.getElementById(prefix + '-alarm-rep').value;
+  const fecha = document.getElementById(prefix + '-alarm-fecha');
+  if (fecha) fecha.style.display = (rep === 'once' || rep === 'weekly') ? '' : 'none';
+}
+
+// Crear alarma desde los campos inline del formulario
+function crearAlarmaSiProcede(tipo, textoFallback) {
+  const chk = document.getElementById(tipo + '-alarm-chk');
+  if (!chk || !chk.checked) return;
+
+  const hora   = document.getElementById(tipo + '-alarm-hora').value;
+  const rep    = document.getElementById(tipo + '-alarm-rep').value;
+  const fecha  = document.getElementById(tipo + '-alarm-fecha').value;
+
+  if (!hora) { toast('⚠ Elige una hora para el recordatorio'); return; }
+  if ((rep === 'once' || rep === 'weekly') && !fecha) {
+    toast('⚠ Elige una fecha para el recordatorio'); return;
+  }
+
+  pedirPermisoNotif();
+
+  const alarm = {
+    id: Date.now(), tipo,
+    texto:  textoFallback,
+    hora, repetir: rep,
+    fecha:  (rep !== 'daily') ? fecha : null,
+    activo: true, ultimoDisparo: null
+  };
+  const arr = getAlarms();
+  arr.push(alarm);
+  setAlarms(arr);
+
+  // Resetear checkbox y campos
+  chk.checked = false;
+  toggleAlarmExtra(tipo);
+  document.getElementById(tipo + '-alarm-hora').value  = '';
+  document.getElementById(tipo + '-alarm-rep').value   = 'daily';
+  if (document.getElementById(tipo + '-alarm-fecha'))
+    document.getElementById(tipo + '-alarm-fecha').value = '';
+}
+
+function delAlarm(id) {
+  if (!confirm('¿Eliminar este recordatorio?')) return;
+  setAlarms(getAlarms().filter(a => a.id !== id));
+  renderAlarms('obs'); renderAlarms('med');
+}
+
+function toggleAlarm(id) {
+  const arr = getAlarms();
+  const a = arr.find(x => x.id === id);
+  if (a) { a.activo = !a.activo; setAlarms(arr); }
+  renderAlarms('obs'); renderAlarms('med');
+}
+
+function renderAlarms(tipo) {
+  const lista   = document.getElementById('lista-alarms-' + tipo);
+  const section = document.getElementById('alarm-section-' + tipo);
+  const warn    = document.getElementById('alarm-warn-' + tipo);
+  if (!lista) return;
+
+  const arr = getAlarms().filter(a => a.tipo === tipo);
+
+  // Mostrar/ocultar el bloque entero
+  if (section) section.style.display = arr.length ? '' : 'none';
+
+  if (!arr.length) { lista.innerHTML = ''; return; }
+
+  const rLabel = { daily: 'Cada día', once: 'Una vez', weekly: 'Cada semana' };
+  lista.innerHTML = arr.map(a => `
+    <div class="alarm-item ${a.activo ? '' : 'alarm-off'}">
+      <span class="alarm-bell">${a.activo ? '🔔' : '🔕'}</span>
+      <div class="alarm-item-info">
+        <div class="alarm-item-title">${esc(a.texto)}</div>
+        <div class="alarm-item-sub">${a.hora}${a.fecha ? ' · '+fmtDate(a.fecha) : ''} · ${rLabel[a.repetir]||a.repetir}</div>
+      </div>
+      <button class="alarm-toggle" onclick="toggleAlarm(${a.id})" title="${a.activo?'Desactivar':'Activar'}">${a.activo?'⏸':'▶'}</button>
+      <button class="btn-del-row" onclick="delAlarm(${a.id})">✕</button>
+    </div>`).join('');
+
+  // Aviso de permiso
+  if (warn && arr.some(a => a.activo)) {
+    if ('Notification' in window && Notification.permission === 'default') {
+      warn.style.display = '';
+      warn.textContent = '⚠ Toca aquí para activar las notificaciones del dispositivo';
+    } else if ('Notification' in window && Notification.permission === 'denied') {
+      warn.style.display = '';
+      warn.textContent = '🚫 Notificaciones bloqueadas. Actívalas en Ajustes del navegador.';
+    } else {
+      warn.style.display = 'none';
+    }
+  }
+}
+
+function pedirPermisoNotif() {
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission().then(() => {
+      renderAlarms('obs'); renderAlarms('med');
+    });
+  }
+}
+
+function checkAlarms() {
+  if (!currentUser) return;
+  const now  = new Date();
+  const hh   = now.getHours().toString().padStart(2,'0');
+  const mm   = now.getMinutes().toString().padStart(2,'0');
+  const hora = hh + ':' + mm;
+  const hoy  = nowDate();
+  const diaSemana = now.getDay();
+
+  const arr = getAlarms();
+  let changed = false;
+
+  arr.forEach(a => {
+    if (!a.activo || a.hora !== hora) return;
+    const key = hoy + 'T' + hora;
+    if (a.ultimoDisparo === key) return;
+    if (a.repetir === 'once'   && a.fecha !== hoy) return;
+    if (a.repetir === 'weekly' && a.fecha) {
+      if (new Date(a.fecha + 'T12:00:00').getDay() !== diaSemana) return;
+    }
+    // Disparar notificación
+    const titulo = a.tipo === 'med' ? '💊 Medicación' : '📋 Recordatorio';
+    if ('Notification' in window && Notification.permission === 'granted') {
+      new Notification(titulo, {
+        body: a.texto, icon: '/CARTILLA-SALUD-FARMACIA/icon.svg',
+        tag: 'alarm-' + a.id, renotify: true
+      });
+    } else {
+      toast('🔔 ' + a.texto, 5000);
+    }
+    a.ultimoDisparo = key;
+    if (a.repetir === 'once') a.activo = false;
+    changed = true;
+  });
+
+  if (changed) { setAlarms(arr); renderAlarms('obs'); renderAlarms('med'); }
+}
+
 // ── DELETE ──
 function delEntry(section, id) {
   if (!confirm('¿Eliminar esta entrada?')) return;
@@ -1944,27 +2238,103 @@ function delEntry(section, id) {
   renderAll();
 }
 
-// ── EXPORT CSV ──
-function exportCSV(section) {
+// ── EXPORTACIÓN ──
+function getDatosExport(section) {
   const arr = getData(section);
-  if (!arr.length) { alert('No hay datos para exportar.'); return; }
-  let rows = [];
+  let cabeceras = [], filas = [], titulo = '';
   if (section === 'tension') {
-    rows = [['Fecha','Hora','Máxima','Mínima','Pulso']];
-    arr.forEach(e => rows.push([e.fecha,e.hora||'',e.sist,e.diast,e.pulso||'']));
+    titulo = 'Tensión Arterial';
+    cabeceras = ['Fecha','Hora','Máxima (mmHg)','Mínima (mmHg)','Pulso (ppm)'];
+    filas = arr.map(e => [e.fecha, e.hora||'', e.sist, e.diast, e.pulso||'']);
   } else if (section === 'colesterol') {
-    rows = [['Fecha','Laboratorio','Total','HDL','LDL','Triglicéridos']];
-    arr.forEach(e => rows.push([e.fecha,e.lab||'',e.total,e.hdl||'',e.ldl||'',e.trig||'']));
+    titulo = 'Colesterol';
+    cabeceras = ['Fecha','Laboratorio','Total (mg/dL)','HDL (mg/dL)','LDL (mg/dL)','Triglicéridos (mg/dL)'];
+    filas = arr.map(e => [e.fecha, e.lab||'', e.total, e.hdl||'', e.ldl||'', e.trig||'']);
   } else if (section === 'azucar') {
-    rows = [['Fecha','Hora','Glucosa (mg/dL)','Momento']];
-    arr.forEach(e => rows.push([e.fecha,e.hora||'',e.valor,e.momento]));
+    titulo = 'Azúcar en Sangre';
+    cabeceras = ['Fecha','Hora','Glucosa (mg/dL)','Momento'];
+    filas = arr.map(e => [e.fecha, e.hora||'', e.valor, e.momento]);
   }
-  const csv = rows.map(r => r.map(v => '"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8;'});
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = section+'_'+nowDate()+'.csv'; a.click();
-  URL.revokeObjectURL(url);
+  return { arr, cabeceras, filas, titulo };
+}
+
+function cargarScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector('script[src="'+src+'"]')) { resolve(); return; }
+    const s = document.createElement('script');
+    s.src = src; s.onload = resolve; s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function exportExcel(section) {
+  const { arr, cabeceras, filas, titulo } = getDatosExport(section);
+  if (!arr.length) { toast('No hay datos para exportar'); return; }
+  toast('Preparando Excel…');
+  try {
+    await cargarScript('https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js');
+  } catch(e) {
+    toast('⚠ Necesitas conexión a internet la primera vez'); return;
+  }
+  const datos = [cabeceras, ...filas];
+  const ws = XLSX.utils.aoa_to_sheet(datos);
+  // Ancho de columnas automático
+  ws['!cols'] = cabeceras.map((h, i) => ({
+    wch: Math.max(h.length, ...filas.map(r => String(r[i]||'').length), 8) + 2
+  }));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, titulo);
+  // Añadir nombre del paciente en metadatos
+  wb.Props = { Title: titulo, Author: currentUser || 'Cartilla de Salud' };
+  XLSX.writeFile(wb, titulo.replace(/ /g,'_') + '_' + nowDate() + '.xlsx');
+  toast('✓ Excel descargado');
+}
+
+async function exportPDF(section) {
+  const { arr, cabeceras, filas, titulo } = getDatosExport(section);
+  if (!arr.length) { toast('No hay datos para exportar'); return; }
+  toast('Preparando PDF…');
+  try {
+    await cargarScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js');
+    await cargarScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js');
+  } catch(e) {
+    toast('⚠ Necesitas conexión a internet la primera vez'); return;
+  }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation: filas[0]?.length > 4 ? 'landscape' : 'portrait' });
+
+  // Cabecera del PDF
+  doc.setFillColor(26, 71, 49);
+  doc.rect(0, 0, doc.internal.pageSize.width, 22, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(14); doc.setFont(undefined, 'bold');
+  doc.text('Cartilla de Salud — ' + titulo, 14, 10);
+  doc.setFontSize(9); doc.setFont(undefined, 'normal');
+  doc.text('Paciente: ' + (currentUser || '—') + '   ·   Generado: ' + new Date().toLocaleDateString('es-ES'), 14, 17);
+
+  doc.setTextColor(0, 0, 0);
+  doc.autoTable({
+    head: [cabeceras],
+    body: filas,
+    startY: 26,
+    styles:     { fontSize: 9, cellPadding: 3 },
+    headStyles: { fillColor: [26, 71, 49], textColor: 255, fontStyle: 'bold' },
+    alternateRowStyles: { fillColor: [240, 248, 244] },
+    margin: { left: 14, right: 14 }
+  });
+
+  // Pie de página
+  const pages = doc.internal.getNumberOfPages();
+  for (let i = 1; i <= pages; i++) {
+    doc.setPage(i);
+    doc.setFontSize(8); doc.setTextColor(150);
+    doc.text('Farmacia Alfon — Cartilla de Salud · Pág. ' + i + ' / ' + pages,
+      doc.internal.pageSize.width / 2, doc.internal.pageSize.height - 6,
+      { align: 'center' });
+  }
+
+  doc.save(titulo.replace(/ /g,'_') + '_' + nowDate() + '.pdf');
+  toast('✓ PDF descargado');
 }
 
 // ── ESC HTML ──
