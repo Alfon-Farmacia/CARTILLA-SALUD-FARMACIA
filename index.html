@@ -182,7 +182,7 @@
       border: none;
     }
     .reg-card:active { background: #d4eddf; transform: scale(.96); }
-    .reg-card svg { width: 38px; height: 38px; stroke: var(--spine2); }
+    .reg-card svg { width: 44px; height: 44px; stroke: var(--spine2); }
     .btn-volver-reg {
       display: inline-flex;
       align-items: center;
@@ -926,140 +926,71 @@
         <div class="page-header"><h2>¿Qué quieres anotar?</h2></div>
         <p class="reg-intro">Elige el tipo de medición</p>
         <div class="reg-grid">
-          <button class="reg-card" onclick="mostrarFormReg('tension')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          <button class="reg-card" onclick="goPage('tension',null)">
+            <!-- Corazón con línea ECG -->
+            <svg viewBox="0 0 56 52" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M28 46C28 46 5 31 5 17C5 9.8 10.8 4 18 4c3.8 0 7.2 1.7 9.5 4.5C30 6 33.4 4 37.5 4C44.7 4 50 9.8 50 17c0 14-22 29-22 29z"/>
+              <polyline points="5,21 11,21 15,9 21,35 25,21 31,21 34,14 38,21 50,21"/>
+            </svg>
             Tensión
           </button>
-          <button class="reg-card" onclick="mostrarFormReg('peso')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2h12l2 6H4L6 2z"/><rect x="3" y="8" width="18" height="14" rx="2"/><path d="M12 12v4m-2-2h4"/></svg>
+          <button class="reg-card" onclick="goPage('peso',null)">
+            <!-- Báscula de baño -->
+            <svg viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="24" width="46" height="26" rx="7"/>
+              <path d="M11 24 A16 16 0 0 1 43 24"/>
+              <path d="M17 24 A10 10 0 0 1 37 24"/>
+              <line x1="27" y1="8" x2="27" y2="16"/>
+              <line x1="11" y1="12" x2="14" y2="15"/>
+              <line x1="43" y1="12" x2="40" y2="15"/>
+              <line x1="27" y1="24" x2="36" y2="17"/>
+            </svg>
             Peso
           </button>
-          <button class="reg-card" onclick="mostrarFormReg('azucar')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+          <button class="reg-card" onclick="goPage('azucar',null)">
+            <!-- Gota de sangre con cubo de azúcar -->
+            <svg viewBox="0 0 46 54" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 5C23 5 6 22 6 33a17 17 0 0 0 34 0C40 22 23 5 23 5z"/>
+              <rect x="14" y="28" width="11" height="11" rx="1.5"/>
+              <polyline points="14,28 11,25 22,25 25,28"/>
+              <line x1="22" y1="25" x2="25" y2="28"/>
+              <line x1="25" y1="28" x2="25" y2="39"/>
+            </svg>
             Azúcar
           </button>
-          <button class="reg-card" onclick="mostrarFormReg('colesterol')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2C8 2 4 6 4 10c0 5 8 12 8 12s8-7 8-12c0-4-4-8-8-8z"/></svg>
+          <button class="reg-card" onclick="goPage('colesterol',null)">
+            <!-- Sección de arteria con placa de colesterol -->
+            <svg viewBox="0 0 56 44" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="28" cy="22" rx="24" ry="19"/>
+              <path d="M17 14 C21 9 27 11 32 14 C37 17 37 21 35 25 C33 29 28 34 24 33 C19 32 13 28 12 23 C11 18 13 19 17 14z"/>
+              <circle cx="21" cy="16" r="3" fill="currentColor" stroke="none"/>
+              <circle cx="31" cy="29" r="2.5" fill="currentColor" stroke="none"/>
+              <circle cx="33" cy="17" r="2" fill="currentColor" stroke="none"/>
+            </svg>
             Colesterol
           </button>
-          <button class="reg-card" onclick="mostrarFormReg('observaciones')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <button class="reg-card" onclick="goPage('observaciones',null)">
+            <!-- Lupa -->
+            <svg viewBox="0 0 54 54" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round">
+              <circle cx="22" cy="22" r="15"/>
+              <line x1="33" y1="33" x2="49" y2="49" stroke-width="4.5" stroke-linecap="round"/>
+            </svg>
             Observaciones
           </button>
-          <button class="reg-card" onclick="mostrarFormReg('medicacion')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+          <button class="reg-card" onclick="goPage('medicacion',null)">
+            <!-- Hoja con cápsula/pastilla -->
+            <svg viewBox="0 0 46 54" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 2h22l10 10v38a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z"/>
+              <polyline points="30,2 30,12 40,12"/>
+              <rect x="13" y="28" width="20" height="12" rx="6"/>
+              <line x1="23" y1="28" x2="23" y2="40"/>
+            </svg>
             Medicación
           </button>
         </div>
       </div>
 
-      <!-- Área de formulario -->
-      <div id="reg-form-area" style="display:none">
-        <button class="btn-volver-reg" onclick="volverSelector()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="20" height="20"><polyline points="15 18 9 12 15 6"/></svg>
-          Volver
-        </button>
-        <div id="reg-titulo-form" class="page-header" style="margin-bottom:14px"><h2></h2></div>
-
-        <!-- Tensión -->
-        <div id="reg-form-tension" class="reg-subform add-form">
-          <div class="form-row" style="margin-bottom:8px">
-            <div class="fg"><label>Fecha</label><input type="date" id="rg-t-fecha"></div>
-            <div class="fg"><label>Hora</label><input type="time" id="rg-t-hora"></div>
-          </div>
-          <div class="form-row3" style="margin-bottom:8px">
-            <div class="fg"><label>Máxima (mmHg)</label><input type="number" id="rg-t-sist" min="60" max="250" placeholder="- -"></div>
-            <div class="fg"><label>Mínima (mmHg)</label><input type="number" id="rg-t-diast" min="40" max="150" placeholder="- -"></div>
-            <div class="fg"><label>Pulso (ppm)</label><input type="number" id="rg-t-pulso" min="30" max="200" placeholder="- -"></div>
-          </div>
-          <div class="btn-add-wrap"><button class="btn-add" onclick="addRegTension()">OK</button></div>
-        </div>
-
-        <!-- Peso -->
-        <div id="reg-form-peso" class="reg-subform add-form">
-          <div class="form-row" style="margin-bottom:8px">
-            <div class="fg"><label>Fecha</label><input type="date" id="rg-pe-fecha"></div>
-            <div class="fg"><label>Hora</label><input type="time" id="rg-pe-hora"></div>
-          </div>
-          <div class="fg" style="margin-bottom:8px">
-            <label>Peso (kg)</label>
-            <input type="number" id="rg-pe-kg" placeholder="- -" step="0.1" min="20" max="300">
-          </div>
-          <div class="btn-add-wrap"><button class="btn-add" onclick="addRegPeso()">OK</button></div>
-        </div>
-
-        <!-- Azúcar -->
-        <div id="reg-form-azucar" class="reg-subform add-form">
-          <div class="form-row" style="margin-bottom:8px">
-            <div class="fg"><label>Fecha</label><input type="date" id="rg-az-fecha"></div>
-            <div class="fg"><label>Hora</label><input type="time" id="rg-az-hora"></div>
-          </div>
-          <div class="form-row" style="margin-bottom:0">
-            <div class="fg"><label>Glucosa (mg/dL)</label><input type="number" id="rg-az-val" min="20" max="600" placeholder="- -"></div>
-            <div class="fg"><label>Momento</label>
-              <select id="rg-az-momento">
-                <option value="Ayunas">En ayunas</option>
-                <option value="Postprandial">Postprandial (2h)</option>
-                <option value="Antes de comer">Antes de comer</option>
-                <option value="Aleatorio">Aleatorio</option>
-              </select>
-            </div>
-          </div>
-          <div class="btn-add-wrap"><button class="btn-add" onclick="addRegAzucar()">OK</button></div>
-        </div>
-
-        <!-- Colesterol -->
-        <div id="reg-form-colesterol" class="reg-subform add-form">
-          <div class="form-row" style="margin-bottom:8px">
-            <div class="fg"><label>Fecha</label><input type="date" id="rg-col-fecha"></div>
-            <div class="fg"><label>Centro / Lab.</label><input type="text" id="rg-col-lab" placeholder="Ej: Centro de salud"></div>
-          </div>
-          <div class="form-row4" style="margin-bottom:0">
-            <div class="fg"><label>Total (mg/dL)</label><input type="number" id="rg-col-total" min="50" max="600" placeholder="- -"></div>
-            <div class="fg"><label>HDL (mg/dL)</label><input type="number" id="rg-col-hdl" min="10" max="200" placeholder="- -"></div>
-            <div class="fg"><label>LDL (mg/dL)</label><input type="number" id="rg-col-ldl" min="10" max="500" placeholder="- -"></div>
-            <div class="fg"><label>Triglicér. (mg/dL)</label><input type="number" id="rg-col-trig" min="30" max="1000" placeholder="- -"></div>
-          </div>
-          <div class="btn-add-wrap"><button class="btn-add" onclick="addRegColesterol()">OK</button></div>
-        </div>
-
-        <!-- Observaciones -->
-        <div id="reg-form-observaciones" class="reg-subform add-form">
-          <div class="fg" style="margin-bottom:8px">
-            <label>Fecha</label>
-            <input type="date" id="rg-ob-fecha">
-          </div>
-          <div class="fg" style="margin-bottom:0">
-            <label>Observación</label>
-            <textarea id="rg-ob-texto" placeholder="Escribe aquí cualquier observación, síntoma, visita médica, cambio de medicación..."></textarea>
-          </div>
-          <div class="btn-add-wrap"><button class="btn-add" onclick="addRegObs()">OK</button></div>
-        </div>
-
-        <!-- Medicación -->
-        <div id="reg-form-medicacion" class="reg-subform add-form">
-          <div class="fg" style="margin-bottom:8px">
-            <label>Nombre del fármaco</label>
-            <input type="text" id="rg-m-nombre" placeholder="Ej: ATORVASTATINA 80 MG" autocomplete="off">
-          </div>
-          <div class="form-row" style="margin-bottom:8px">
-            <div class="fg"><label>Unidades</label><input type="text" id="rg-m-unidades" placeholder="Ej: COMPRIMIDO"></div>
-            <div class="fg"><label>Vía</label><input type="text" id="rg-m-via" placeholder="Ej: ORAL"></div>
-          </div>
-          <div class="form-row4" style="margin-bottom:8px">
-            <div class="fg"><label>☕ Desayuno</label><input type="text" id="rg-m-desayuno" placeholder="—" style="text-align:center"></div>
-            <div class="fg"><label>🍽 Comida</label><input type="text" id="rg-m-comida" placeholder="—" style="text-align:center"></div>
-            <div class="fg"><label>🌙 Cena</label><input type="text" id="rg-m-cena" placeholder="—" style="text-align:center"></div>
-            <div class="fg"><label>🛏 Acostarse</label><input type="text" id="rg-m-acostarse" placeholder="—" style="text-align:center"></div>
-          </div>
-          <div class="form-row" style="margin-bottom:0">
-            <div class="fg"><label>Fecha inicial</label><input type="date" id="rg-m-finicio"></div>
-            <div class="fg"><label>Fecha final</label><input type="text" id="rg-m-ffinal" placeholder="CRÓNICO"></div>
-          </div>
-          <div class="btn-add-wrap"><button class="btn-add" onclick="addRegMed()">OK</button></div>
-        </div>
-
-      </div>
+    </div>
     </div>
 
     <!-- PESO -->
@@ -1569,29 +1500,6 @@ function goPage(name, btn) {
   currentPage = name;
 }
 
-// ── SWIPE HORIZONTAL CON DEDO ─────────────────────────────────────────────────
-function initDrag() {
-  const area = document.getElementById('pages');
-  let x0 = null, y0 = null;
-
-  area.addEventListener('touchstart', e => {
-    x0 = e.touches[0].clientX;
-    y0 = e.touches[0].clientY;
-  }, { passive: true });
-
-  area.addEventListener('touchend', e => {
-    if (x0 === null) return;
-    const dx = e.changedTouches[0].clientX - x0;
-    const dy = e.changedTouches[0].clientY - y0;
-    x0 = null; y0 = null;
-    // Solo actuar si el gesto es más horizontal que vertical
-    if (Math.abs(dx) < 50 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
-    const idx = PAGE_ORDER.indexOf(currentPage);
-    if (dx < 0 && idx < PAGE_ORDER.length - 1) goPage(PAGE_ORDER[idx + 1], null); // izquierda → siguiente
-    if (dx > 0 && idx > 0)                     goPage(PAGE_ORDER[idx - 1], null); // derecha → anterior
-  }, { passive: true });
-}
-// ──────────────────────────────────────────────────────────────────────────────
 
 // ── TOAST ──
 function toast(msg) {
@@ -1669,7 +1577,6 @@ function initApp() {
   }
 
   renderAll();
-  initDrag();
 }  // end initApp
 
 // ── PORTADA ──
@@ -2044,122 +1951,6 @@ function esc(s) {
   if (window._iconCache) return;
   window._iconCache = { i192: dibujarIcono(192), i512: dibujarIcono(512) };
 })();
-
-// ── REGISTRAR HUB ──
-const REG_TITULOS = {
-  tension:       'Tensión Arterial',
-  peso:          'Peso',
-  azucar:        'Azúcar en Sangre',
-  colesterol:    'Colesterol',
-  observaciones: 'Observaciones',
-  medicacion:    'Medicación'
-};
-
-function mostrarFormReg(tipo) {
-  document.getElementById('reg-selector').style.display  = 'none';
-  document.getElementById('reg-form-area').style.display = 'block';
-  document.getElementById('reg-titulo-form').querySelector('h2').textContent = REG_TITULOS[tipo];
-  document.querySelectorAll('.reg-subform').forEach(el => el.classList.remove('visible'));
-  document.getElementById('reg-form-' + tipo).classList.add('visible');
-  const hoy = nowDate(), hora = nowTime();
-  if (tipo === 'tension')       { document.getElementById('rg-t-fecha').value   = hoy; document.getElementById('rg-t-hora').value   = hora; }
-  if (tipo === 'peso')          { document.getElementById('rg-pe-fecha').value  = hoy; document.getElementById('rg-pe-hora').value  = hora; }
-  if (tipo === 'azucar')        { document.getElementById('rg-az-fecha').value  = hoy; document.getElementById('rg-az-hora').value  = hora; }
-  if (tipo === 'colesterol')    { document.getElementById('rg-col-fecha').value = hoy; }
-  if (tipo === 'observaciones') { document.getElementById('rg-ob-fecha').value  = hoy; }
-  document.getElementById('page-registrar').scrollTop = 0;
-}
-
-function volverSelector() {
-  document.getElementById('reg-form-area').style.display = 'none';
-  document.getElementById('reg-selector').style.display  = 'block';
-  document.getElementById('page-registrar').scrollTop    = 0;
-}
-
-function addRegTension() {
-  const s = +document.getElementById('rg-t-sist').value;
-  const d = +document.getElementById('rg-t-diast').value;
-  if (!s || !d) { alert('Introduce sistólica y diastólica.'); return; }
-  const arr = getData('tension');
-  arr.unshift({ id: Date.now(), fecha: document.getElementById('rg-t-fecha').value, hora: document.getElementById('rg-t-hora').value, sist: s, diast: d, pulso: +document.getElementById('rg-t-pulso').value || null });
-  setData('tension', arr);
-  ['rg-t-sist','rg-t-diast','rg-t-pulso'].forEach(id => document.getElementById(id).value = '');
-  renderTension();
-  toast('✓ Tensión guardada');
-  volverSelector();
-}
-
-function addRegPeso() {
-  const kg = parseFloat(document.getElementById('rg-pe-kg').value);
-  if (!kg || kg < 20 || kg > 300) { alert('Introduce un peso válido.'); return; }
-  const arr = getData('peso');
-  arr.unshift({ id: Date.now(), fecha: document.getElementById('rg-pe-fecha').value, hora: document.getElementById('rg-pe-hora').value, kg });
-  setData('peso', arr);
-  document.getElementById('rg-pe-kg').value = '';
-  renderPeso();
-  toast('✓ Peso guardado');
-  volverSelector();
-}
-
-function addRegAzucar() {
-  const v = +document.getElementById('rg-az-val').value;
-  if (!v) { alert('Introduce el valor de glucosa.'); return; }
-  const arr = getData('azucar');
-  arr.unshift({ id: Date.now(), fecha: document.getElementById('rg-az-fecha').value, hora: document.getElementById('rg-az-hora').value, valor: v, momento: document.getElementById('rg-az-momento').value });
-  setData('azucar', arr);
-  document.getElementById('rg-az-val').value = '';
-  renderAzucar();
-  toast('✓ Glucosa guardada');
-  volverSelector();
-}
-
-function addRegColesterol() {
-  const t = +document.getElementById('rg-col-total').value;
-  if (!t) { alert('Introduce el colesterol total.'); return; }
-  const arr = getData('colesterol');
-  arr.unshift({ id: Date.now(), fecha: document.getElementById('rg-col-fecha').value, lab: document.getElementById('rg-col-lab').value.trim(), total: t, hdl: +document.getElementById('rg-col-hdl').value || null, ldl: +document.getElementById('rg-col-ldl').value || null, trig: +document.getElementById('rg-col-trig').value || null });
-  setData('colesterol', arr);
-  ['rg-col-total','rg-col-hdl','rg-col-ldl','rg-col-trig','rg-col-lab'].forEach(id => document.getElementById(id).value = '');
-  renderColesterol();
-  toast('✓ Analítica guardada');
-  volverSelector();
-}
-
-function addRegObs() {
-  const texto = document.getElementById('rg-ob-texto').value.trim();
-  if (!texto) { alert('Escribe una observación.'); return; }
-  const arr = getData('obs');
-  arr.unshift({ id: Date.now(), fecha: document.getElementById('rg-ob-fecha').value, texto });
-  setData('obs', arr);
-  document.getElementById('rg-ob-texto').value = '';
-  renderObs();
-  toast('✓ Observación guardada');
-  volverSelector();
-}
-
-function addRegMed() {
-  const nombre = document.getElementById('rg-m-nombre').value.trim();
-  if (!nombre) { alert('Escribe el nombre del fármaco.'); return; }
-  const entry = {
-    id: Date.now(), nombre,
-    unidades:  document.getElementById('rg-m-unidades').value.trim(),
-    via:       document.getElementById('rg-m-via').value.trim(),
-    desayuno:  document.getElementById('rg-m-desayuno').value.trim(),
-    comida:    document.getElementById('rg-m-comida').value.trim(),
-    cena:      document.getElementById('rg-m-cena').value.trim(),
-    acostarse: document.getElementById('rg-m-acostarse').value.trim(),
-    finicio:   document.getElementById('rg-m-finicio').value,
-    ffinal:    document.getElementById('rg-m-ffinal').value.trim() || 'CRÓNICO',
-  };
-  const arr = getData('med');
-  arr.push(entry);
-  setData('med', arr);
-  ['rg-m-nombre','rg-m-unidades','rg-m-via','rg-m-desayuno','rg-m-comida','rg-m-cena','rg-m-acostarse','rg-m-ffinal'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('rg-m-finicio').value = '';
-  renderMed();
-  toast('✓ Fármaco añadido');
-  volverSelector();
-}
 
 // ── SERVICE WORKER (PWA offline) ──
 if ('serviceWorker' in navigator) {
