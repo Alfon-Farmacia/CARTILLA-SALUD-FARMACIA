@@ -2540,23 +2540,12 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 
-<!-- ── FIREBASE ── -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- ── JSONBIN SYNC ── -->
 <script>
-// Inicializar Firebase
-const firebaseConfig = {
-  apiKey:            "AIzaSyB6ECm6k2cVUc10u5FRCZGXobvRbq10Cto",
-  authDomain:        "cartilla-salud-farmacia.firebaseapp.com",
-  projectId:         "cartilla-salud-farmacia",
-  storageBucket:     "cartilla-salud-farmacia.firebasestorage.app",
-  messagingSenderId: "100100980157",
-  appId:             "1:100100980157:web:9312a7e1261e573062a6d4"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const JBIN_KEY    = '$2a$10$djcGrvoYJLwcV7J6ORG42OzTVdQ4KZhs9QfrL8FDqAnFXYHJOmHk6';
+const JBIN_MASTER = '69e8e30136566621a8ddfd3a';
+const JBIN_BASE   = 'https://api.jsonbin.io/v3/b';
 
-// ── SINCRONIZACIÓN CON FIREBASE ──
 let _syncTimer = null;
 
 function slugUsuario(nombre) {
@@ -2565,40 +2554,52 @@ function slugUsuario(nombre) {
     .replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').slice(0,40);
 }
 
-function sincronizarConFirebase() {
+async function sincronizarConJsonBin() {
   if (!currentUser) return;
   clearTimeout(_syncTimer);
   _syncTimer = setTimeout(async () => {
     const slug = slugUsuario(currentUser);
+    const datos = {
+      nombre:        currentUser,
+      ultimaSync:    new Date().toISOString(),
+      tension:       getData('tension'),
+      peso:          getData('peso'),
+      azucar:        getData('azucar'),
+      colesterol:    getData('colesterol'),
+      observaciones: getData('obs'),
+      medicacion:    getData('med')
+    };
     try {
-      await db.collection('pacientes').doc(slug).set({
-        nombre:          currentUser,
-        ultimaSync:      firebase.firestore.FieldValue.serverTimestamp(),
-        tension:         getData('tension'),
-        peso:            getData('peso'),
-        azucar:          getData('azucar'),
-        colesterol:      getData('colesterol'),
-        observaciones:   getData('obs'),
-        medicacion:      getData('med')
+      // Leer bin maestro actual
+      const res = await fetch(`${JBIN_BASE}/${JBIN_MASTER}/latest`, {
+        headers: { 'X-Master-Key': JBIN_KEY }
+      });
+      const json = await res.json();
+      const actual = json.record || {};
+      const pacientes = actual.pacientes || {};
+      pacientes[slug] = datos;
+      // Guardar bin maestro actualizado
+      await fetch(`${JBIN_BASE}/${JBIN_MASTER}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': JBIN_KEY },
+        body: JSON.stringify({ pacientes })
       });
     } catch(e) {
-      // Sin internet: no pasa nada, datos ya están en localStorage
+      // Sin internet: datos seguros en localStorage
     }
-  }, 2500); // espera 2,5 s tras el último cambio antes de sincronizar
+  }, 2500);
 }
 
-// Enganchamos setData para que sincronice automáticamente
 const _setDataOriginal = setData;
 function setData(section, arr) {
   _setDataOriginal(section, arr);
-  sincronizarConFirebase();
+  sincronizarConJsonBin();
 }
 
-// Primera sincronización al iniciar sesión
 const _initAppOriginal = initApp;
 function initApp() {
   _initAppOriginal();
-  sincronizarConFirebase();
+  sincronizarConJsonBin();
 }
 </script>
 </body>
