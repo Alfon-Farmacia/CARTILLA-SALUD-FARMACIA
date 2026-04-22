@@ -851,29 +851,17 @@
       <p>Farmacia Alfonso Moraleda · farmaciasenorafatima@gmail.com · Av. Nuestra Señora de Fátima, 97 · 28047 Madrid</p>
     </div>
 
-    <!-- Casillas de aceptación -->
+    <!-- Casilla única de aceptación -->
     <div class="rgpd-checks">
       <label class="rgpd-check">
         <input type="checkbox" id="rgpd-chk1">
-        <span>He leído y acepto la <strong>Política de Privacidad</strong> de la Farmacia Alfonso Moraleda.</span>
-      </label>
-      <label class="rgpd-check">
-        <input type="checkbox" id="rgpd-chk2">
-        <span>Doy mi <strong>consentimiento expreso</strong> para el tratamiento de mis datos de salud con fines de seguimiento farmacoterapéutico.</span>
-      </label>
-      <label class="rgpd-check">
-        <input type="checkbox" id="rgpd-chk3">
-        <span>He sido informado/a de mis <strong>derechos</strong> sobre mis datos personales y sé cómo ejercerlos.</span>
-      </label>
-      <label class="rgpd-check">
-        <input type="checkbox" id="rgpd-chk4">
-        <span>Acepto las <strong>condiciones de uso</strong> de la aplicación Cartilla de Salud.</span>
+        <span>He leído los documentos anteriores y acepto la <strong>Política de Privacidad</strong>, el tratamiento de mis datos de salud y las condiciones de uso de la aplicación Cartilla de Salud de la Farmacia Alfonso Moraleda.</span>
       </label>
     </div>
 
     <div class="rgpd-error" id="rgpd-error"></div>
     <button class="rgpd-btn" onclick="aceptarRgpd()">Acepto y continúo →</button>
-    <p class="rgpd-nota">Debe aceptar todos los puntos para usar la aplicación.<br>Puede solicitar copia impresa en la farmacia.</p>
+    <p class="rgpd-nota">Puede solicitar copia impresa de los documentos en la farmacia.</p>
   </div>
 </div>
 
@@ -1586,10 +1574,9 @@ function verDocRgpd(id, btn) {
 
 function aceptarRgpd() {
   const err = document.getElementById('rgpd-error');
-  const checks = ['rgpd-chk1','rgpd-chk2','rgpd-chk3','rgpd-chk4'];
-  const todos = checks.every(id => document.getElementById(id).checked);
+  const todos = document.getElementById('rgpd-chk1').checked;
   if (!todos) {
-    err.textContent = 'Debe marcar todas las casillas para continuar.';
+    err.textContent = 'Debe marcar la casilla para continuar.';
     return;
   }
   err.textContent = '';
@@ -2550,6 +2537,68 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/CARTILLA-SALUD-FARMACIA/sw.js').catch(() => {});
   });
+}
+</script>
+
+<!-- ── FIREBASE ── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script>
+// Inicializar Firebase
+const firebaseConfig = {
+  apiKey:            "AIzaSyB6ECm6k2cVUc10u5FRCZGXobvRbq10Cto",
+  authDomain:        "cartilla-salud-farmacia.firebaseapp.com",
+  projectId:         "cartilla-salud-farmacia",
+  storageBucket:     "cartilla-salud-farmacia.firebasestorage.app",
+  messagingSenderId: "100100980157",
+  appId:             "1:100100980157:web:9312a7e1261e573062a6d4"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// ── SINCRONIZACIÓN CON FIREBASE ──
+let _syncTimer = null;
+
+function slugUsuario(nombre) {
+  return (nombre || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').slice(0,40);
+}
+
+function sincronizarConFirebase() {
+  if (!currentUser) return;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(async () => {
+    const slug = slugUsuario(currentUser);
+    try {
+      await db.collection('pacientes').doc(slug).set({
+        nombre:          currentUser,
+        ultimaSync:      firebase.firestore.FieldValue.serverTimestamp(),
+        tension:         getData('tension'),
+        peso:            getData('peso'),
+        azucar:          getData('azucar'),
+        colesterol:      getData('colesterol'),
+        observaciones:   getData('obs'),
+        medicacion:      getData('med')
+      });
+    } catch(e) {
+      // Sin internet: no pasa nada, datos ya están en localStorage
+    }
+  }, 2500); // espera 2,5 s tras el último cambio antes de sincronizar
+}
+
+// Enganchamos setData para que sincronice automáticamente
+const _setDataOriginal = setData;
+function setData(section, arr) {
+  _setDataOriginal(section, arr);
+  sincronizarConFirebase();
+}
+
+// Primera sincronización al iniciar sesión
+const _initAppOriginal = initApp;
+function initApp() {
+  _initAppOriginal();
+  sincronizarConFirebase();
 }
 </script>
 </body>
