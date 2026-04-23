@@ -1,5 +1,5 @@
 // Service Worker — Cartilla de Salud
-const CACHE = 'cartilla-v5';
+const CACHE = 'cartilla-v6';
 const FILES = [
   '/CARTILLA-SALUD-FARMACIA/',
   '/CARTILLA-SALUD-FARMACIA/index.html',
