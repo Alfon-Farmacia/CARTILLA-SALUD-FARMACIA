@@ -958,10 +958,19 @@
   <!-- ── CABECERA ── -->
   <div id="app-header">
     <span class="app-title">Cartilla de Salud</span>
-    <button id="btn-cambiar-usuario" onclick="cambiarUsuario()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-      <span id="label-usuario">Usuario</span>
-    </button>
+    <div style="display:flex;align-items:center;gap:6px">
+      <button id="btn-compartir" onclick="compartirApp()" title="Compartir por WhatsApp" style="background:rgba(255,255,255,.15);border:none;border-radius:20px;padding:10px 12px;color:#f5deb3;cursor:pointer;display:flex;align-items:center;min-height:44px;-webkit-tap-highlight-color:transparent">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#f5deb3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+      </button>
+      <button id="btn-cambiar-usuario" onclick="cambiarUsuario()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        <span id="label-usuario">Usuario</span>
+      </button>
+    </div>
   </div>
 
   <!-- ── PESTAÑAS SUPERIORES ── -->
@@ -1719,6 +1728,16 @@ function entrarUsuario() {
   document.getElementById('user-overlay').classList.add('hidden');
   document.getElementById('label-usuario').textContent = currentNombre.split(' ')[0];
   initApp();
+}
+
+function compartirApp() {
+  const url = window.location.href.split('?')[0].split('#')[0];
+  const texto = '🌿 Cartilla de Salud — lleva el control de tu tensión, peso, azúcar y medicación desde el móvil. Entra aquí: ' + url;
+  if (navigator.share) {
+    navigator.share({ title: 'Cartilla de Salud', text: texto, url });
+  } else {
+    window.open('https://wa.me/?text=' + encodeURIComponent(texto), '_blank');
+  }
 }
 
 function cambiarUsuario() {
